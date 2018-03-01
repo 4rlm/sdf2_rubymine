@@ -138,3 +138,4 @@ gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
 
 # gem 'will_filter'
 # gem 'kaminari'
+#
