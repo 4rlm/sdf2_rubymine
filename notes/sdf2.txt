@@ -1,0 +1,175 @@
+Act
+Cont
+Adr
+Phone
+Web
+
+Title
+Description
+
+Phoning
+ActWeb
+ActAdr
+ContTitle
+ContDescription
+========================
+
+$ rails new sdf2 --database=postgresql
+$ cd sdf2
+$ bundle update
+$ bundle install
+$ rails generate controller home index
+$ rm public/index.html
+> config/routes.rb, root :to => "home#index"
+
+========================
+
+==Act==
+$ rails g scaffold Act src sts crma name
+
+t.index :name, unique: true
+t.index :act_num, unique: true
+
+==Cont==
+$ rails g scaffold Cont src sts act_id:integer crmc first_name last_name email act:references
+
+t.index :email, unique: true
+
+==Adr==
+$ rails g scaffold Adr src sts street unit city state zip pin latitude:float longitude:float
+
+==Phone==
+$ rails g scaffold Phone src sts phone
+
+t.index :phone, unique: true
+
+==Web==
+$ rails g scaffold Web src sts url staff_page locations_page
+
+t.index :url, unique: true t.index :staff_page, unique: true t.index :locations_page, unique: true
+
+===========
+$ rails g model Phoning phonable_type phone_id:integer phonable_id:integer
+
+$ rails g model ActWeb act_id:integer web_id:integer
+
+$ rails g model ActAdr act_id:integer adr_id:integer
+
+$ rails g model ContTitle cont_id:integer title_id:integer
+
+$ rails g model ContDescription cont_id:integer description_id:integer
+
+$ rails g model Title job_title
+
+$ rails g model Description job_desc
+
+====================
+
+
+MODEL
+
+== Act ==
+  validates_uniqueness_of :act_num, allow_blank: true, allow_nil: true
+
+  has_many :conts
+
+  has_many :phonings, as: :phonable
+  has_many :phones, through: :phonings
+
+  has_many :act_adrs, dependent: :destroy
+  has_many :adrs, through: :act_adrs
+
+  has_many :act_webs, dependent: :destroy
+  has_many :webs, through: :act_webs
+
+== Cont ==
+  belongs_to :act
+  validates_uniqueness_of :cont_num, allow_blank: true, allow_nil: true
+
+  has_many :phonings, as: :phonable
+  has_many :phones, through: :phonings
+
+  has_many :cont_descriptions, dependent: :destroy
+  has_many :descriptions, through: :cont_descriptions
+
+  has_many :cont_titles, dependent: :destroy
+  has_many :titles, through: :cont_titles
+
+
+
+== Adr ==
+  has_many :act_adrs, dependent: :destroy
+  has_many :acts, through: :act_adrs
+
+  def full_adr
+    [street, city, state, zip].compact.join(',')
+  end
+
+== Phone ==
+  validates :phone, uniqueness: true
+  has_many :phonings
+  has_many :acts, through: :phonings, src: :phonable, src_type: :Act
+  has_many :conts, through: :phonings, src: :phonable, src_type: :Cont
+
+== Phoning ==
+  belongs_to :phonable, polymorphic: true
+  belongs_to :phone
+
+  validates :phone_id, :uniqueness => { :scope => [:phonable_type, :phonable_id] } #=> ALSO IN MIGRATION!
+
+== Web ==
+  has_many :act_webs, dependent: :destroy
+  has_many :acts, through: :act_webs
+
+  validates_uniqueness_of :url, allow_blank: true, allow_nil: true
+
+== Description ==
+  has_many :cont_descriptions, dependent: :destroy
+  has_many :conts, through: :cont_descriptions
+
+  validates_uniqueness_of :job_desc, allow_blank: true, allow_nil: true
+
+
+== Title ==
+  has_many :cont_titles, dependent: :destroy
+  has_many :conts, through: :cont_titles
+
+  validates_uniqueness_of :job_title, allow_blank: true, allow_nil: true
+
+
+== ActWeb ==
+  belongs_to :act
+  belongs_to :website
+
+  validates_uniqueness_of :act, scope: :website_id
+
+
+== ActAdr ==
+  belongs_to :act
+  belongs_to :adr
+
+  validates_uniqueness_of :act, scope: :adr_id
+
+
+== ContDescription ==
+  belongs_to :cont
+  belongs_to :description
+
+  validates_uniqueness_of :cont, scope: :description_id
+
+
+== ContTitle ==
+  belongs_to :cont
+  belongs_to :title
+
+  validates_uniqueness_of :cont, scope: :title_id
+
+===========================
+
+
+$ rake db:create
+$ rake db:migrate
+
+* SAMPLE THE SITE:
+  $ rails s
+  $ rails c

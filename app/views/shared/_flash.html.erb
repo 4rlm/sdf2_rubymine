@@ -1,0 +1,17 @@
+<div class="row flash text-center" style="margin: 0;">
+  <% if flash[:notice] %>
+  <div class='alert alert-success' data-dismiss='alert' style='cursor: pointer;'>
+    <%= flash[:notice] %>
+  </div>
+  <% elsif flash.now[:alert] %>
+  <div class='alert alert-danger'>
+    <button type='button' class='close' data-dismiss='alert'></button>
+    <%= flash.now[:alert] %>
+  </div>
+  <% elsif flash[:alert] %>
+  <div class='alert alert-warning'>
+    <button type='button' class='close' data-dismiss='alert'></button>
+    <%= flash[:alert] %>
+  </div>
+  <% end %>
+</div>

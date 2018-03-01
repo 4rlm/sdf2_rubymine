@@ -1,0 +1,4 @@
+1) re-scrape data
+2) ensure merged data gets updated, but not unmerged (unless it has changed).
+3) add adrs into all conts
+4) ability to search conts by state

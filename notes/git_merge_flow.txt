@@ -1,0 +1,7 @@
+commit feature
+co kakap
+pull origin
+co feature
+merge kakap
+push feature
+pull request on github

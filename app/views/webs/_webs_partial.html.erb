@@ -1,0 +1,61 @@
+<p id="notice"><%= notice %></p>
+
+<br>
+<h1>Websites</h1>
+<h3><%= @webs.count %></h3>
+<br>
+
+<table class="table table-bordered table-hover table-striped text-nowrap">
+  <thead>
+    <tr>
+      <th><%= sortable("url", "Website") %></th>
+      <th><%= sortable("url_ver_sts", "url_ver_sts") %></th>
+      <th><%= sortable("sts_code", "sts_code") %></th>
+      <th><%= sortable("url_ver_date", "url_ver_date") %></th>
+      <th><%= sortable("tmp_sts", "tmp_sts") %></th>
+      <th><%= sortable("temp_name", "temp_name") %></th>
+      <th><%= sortable("tmp_date", "tmp_date") %></th>
+      <th><%= sortable("slink_sts", "slink_sts") %></th>
+      <th><%= sortable("llink_sts", "llink_sts") %></th>
+      <th><%= sortable("stext_sts", "stext_sts") %></th>
+      <th><%= sortable("ltext_sts", "ltext_sts") %></th>
+      <th><%= sortable("pge_date", "pge_date") %></th>
+      <th><%= sortable("as_sts", "as_sts") %></th>
+      <th><%= sortable("as_date", "as_date") %></th>
+      <th><%= sortable("cs_sts", "cs_sts") %></th>
+      <th><%= sortable("cs_date", "cs_date") %></th>
+      <th><%= sortable("created_at", "created_at") %></th>
+      <th><%= sortable("updated_at", "Updated") %></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @webs.each do |web| %>
+      <tr>
+        <td><%= link_to web.url, web %></td>
+        <td><%= web.url_ver_sts %></td>
+        <td><%= web.sts_code %></td>
+        <td><%= web.url_ver_date&.strftime('%x') %></td>
+        <td><%= web.tmp_sts %></td>
+        <td><%= web.temp_name %></td>
+        <td><%= web.tmp_date&.strftime('%x') %></td>
+        <td><%= web.slink_sts %></td>
+        <td><%= web.llink_sts %></td>
+        <td><%= web.stext_sts %></td>
+        <td><%= web.ltext_sts %></td>
+        <td><%= web.pge_date&.strftime('%x') %></td>
+        <td><%= web.as_sts %></td>
+        <td><%= web.as_date&.strftime('%x') %></td>
+        <td><%= web.cs_sts %></td>
+        <td><%= web.cs_date&.strftime('%x') %></td>
+        <td><%= web.created_at.strftime('%x') %></td>
+        <td><%= web.updated_at.strftime('%x') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+<%= will_paginate @webs %>
+<br>
+<br>

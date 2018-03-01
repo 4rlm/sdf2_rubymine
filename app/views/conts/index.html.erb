@@ -1,0 +1,41 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Conts</h1>
+
+<table class="table table-bordered table-hover table-striped text-nowrap">
+  <thead>
+    <tr>
+      <th>Source</th>
+      <th>sts</th>
+      <th>Act</th>
+      <th>Crm cont num</th>
+      <th>First name</th>
+      <th>Last name</th>
+      <th>Email</th>
+      <th>Act</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @conts.each do |cont| %>
+      <tr>
+        <td><%= cont.src %></td>
+        <td><%= cont.sts %></td>
+        <td><%= cont.act_id %></td>
+        <td><%= cont.crmc %></td>
+        <td><%= cont.first_name %></td>
+        <td><%= cont.last_name %></td>
+        <td><%= cont.email %></td>
+        <td><%= cont.act %></td>
+        <td><%= link_to 'Show', cont %></td>
+        <td><%= link_to 'Edit', edit_cont_path(cont) %></td>
+        <td><%= link_to 'Destroy', cont, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Cont', new_cont_path %>

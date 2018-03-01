@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SDF2</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <%= render partial: 'shared/nav' %>
+    <div id="main-wrapper" class="container-fluid outer-container" style="margin:5px;">
+      <%= render partial: 'shared/flash' %>
+      <%#= render partial: 'shared/main/main_index' %>
+      <%= yield %>
+    </div>
+
+    <footer id="footer">
+    </footer>
+  </body>
+
+</html>

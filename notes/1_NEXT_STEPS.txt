@@ -1,0 +1,6 @@
+NEXT STEPS
+*) Update OS and any other apps
+
+1) Git Commit and Push
+2) db/csv/imports
+3) db/csv/backups

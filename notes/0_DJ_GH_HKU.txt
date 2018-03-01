@@ -1,0 +1,558 @@
+rails g scaffold Web --migration=false --skip
+
+
+
+############ GOOD TIPS ############
+  rails callback functions
+  obj.errors
+  obj.reload
+
+  Find Duplicates:
+  webs = Web.select(:url).group(:url).having("count(*) > 1").size
+  acts = Act.select(:act_name).group(:act_name).having("count(*) > 1").size
+#############
+{"https://www.maticktoyota.com"=>2, "https://www.lakelandtoyota.com"=>2, "https://www.flemingtondodgechryslerjeep.com"=>2, "https://www.billionauto.com"=>2, "https://www.leithtoyota.com"=>2, "https://www.kennyrosstoyota.com"=>2, "https://www.rickmcgillairporttoyota.com"=>2, "https://www.cherokeecountytoyota.com"=>2, "https://www.hoseltontoyota.com"=>2}
+########################################
+
+== CRMA ==
+rails g model Crma
+t.string   :crma, index: true, unique: true, allow_nil: false
+
+== CRMC ==
+rails g model Crmc
+t.string   :crmc, index: true, unique: true, allow_nil: false
+t.integer   :crma_id
+
+======================
+
+CRMA Class Model:
+belongs to: act
+has_many: crmc
+
+CRMC Class Model:
+belongs to: crma
+
+
+ACT Class Model:
+has_many: crma
+has_many: crmc through crma
+///////////////////////////////
+
+
+
+
+==============================
+url_ver_date: Time.now
+query = Web.
+  where(urlx: FALSE).
+  where("url_ver_date < date").
+  order("updated_at ASC").
+  pluck(:id)
+
+where(attribute: [value1,value2])
+
+
+Post.
+  where(
+  t[:author].eq("Someone").
+  or(t[:title].matches("%something%"))
+)
+
+
+Post.
+  where(user_id: current_user.id, notetype: p[:note_type]).
+  where("date > ?", p[:date]).
+  order('date ASC, created_at ASC')
+
+Web.count
+query = Web.where(url_ver_sts: "Valid").count
+query = Web.where("url_ver_sts LIKE '%Error%'").count
+query = Web.where("url_ver_sts LIKE '%Error%'").select(:url_ver_sts).pluck(:url_ver_sts).uniq
+["Error: Host", "Error: Expired Url", "Error: Transfer", "Error: Certificate", "Error: Undefined"]
+query = Web.where(url_ver_sts: 'Error: Host').order("updated_at DESC")[0..10].pluck(:url_ver_sts)
+query = Web.where("url_ver_sts LIKE '%Error%'").count
+adrs = Adr.where("zip LIKE '%-%'").count
+
+query = Web.where(url_ver_sts: 'Error: Host').count
+
+adrs = Adr.where("street LIKE '%,%'").count
+acts = Act.where("act_name LIKE '%,%'").count
+###############
+
+query = Web.where.not(url_ver_sts: nil).order("updated_at DESC")
+query = Web.where(urlx: true, url_ver_sts: "Valid").order("updated_at DESC")
+
+urlx: true
+
+
+## Edit below to use as format for GpAct query.
+ query =  Act.select(:id).where(act_sts: nil, actx: false, gp_sts: nil).order("updated_at ASC").pluck(:id).count
+ *** Then grab web url which is not archived.
+
+
+
+## Edit below to use as format for update or create new act from GpAct
+ #<Act id: 22367, act_name: "Front Range Honda in Colorado Springs, CO", crma: nil, act_sts: nil, act_src: nil, cop: true, actx: false, act_fwd_id: nil, gp_sts: nil, act_gp_date: nil, place_id: nil, act_gp_indus: nil, top: nil, ward: 500,
+
+url_ver_sts: "Valid"
+
+########################################
+Short list to-do ...
+- format wards 500 and place in seeds for import.
+- format contacts and place in seeds for import (either clean existing, or get original sfdc files.)
+- check on zip codes (format_adr)
+	* ensure last for of 9 digits getting sliced, use zip = zip.split('-')&.first
+	* ensure all zips 5 digits length.
+	* ensure no commas at end of street address.
+
+####### Steps from Scratch #######
+=== COP Import and Process ===
+1) drop/create/migrate
+	$ rails db:drop
+	$ rails db:create
+	$ rails db:migrate
+
+2) Import: COPs to uni_act - then backup
+	:> CsvTool.new.import_uni_seeds('uni_act', '1_acts_cop.csv')
+	:> Start.create_backups
+
+3) Restore: backups (to get brands, cities, dealers, templates, terms)
+	* Important: Restore: cop-backups_bu-18-01-18 [it contains imported copilot, and essential lists-only]
+	:> Start.restore_backups
+
+4) Run: url redirect - then backup
+	:> Start.start_ver_url
+
+5) Delete: archived webs - then backup
+
+6) Run: GP - then backup
+  :> Start.start_act_goog
+
+7) Run: url redirect (for new GPs) - then backup
+8) Delete: archived acts, and ensure newly created accounts keep COP bool. - then backup
+9!) Skip: Template and page finder till later!!!!
+===============================
+
+=== CRM Import and Process ===
+-- Repeat above.
+-- Ensure CRM act num get updated into COPs when match!!!
+===============================
+
+=== Run: Template Finder ===
+=== Run: Page Finder ===
+=== Run: Act Scraper ===
+
+
+########### Advanced Schema ###########
+
+  has_many :cont_descriptions, dependent: :destroy
+  has_many :descriptions, through: :cont_descriptions
+  accepts_nested_attributes_for :cont_descriptions, :descriptions
+
+  validates_uniqueness_of :crmc, allow_blank: true, allow_nil: true
+  validates_uniqueness_of :crmc
+
+
+############ HIGHLIGHTS ############
+	$ foreman start
+	$ killall "foreman: master"
+  $ rake jobs:clear
+	$ tail -f log/development.log
+
+######### Quick Delete, Find, Add #########
+	delete_city = City.where(city_name: 'Mercedes').destroy_all
+	find_city = City.where(city_name: 'St Augustine')
+	add_city = City.create(city_name: "St Augustine", state_code: "FL")
+
+############ KILL Process Signal List ############
+	"EXIT"=>0, "HUP"=>1, "INT"=>2, "QUIT"=>3, "ILL"=>4, "TRAP"=>5, "ABRT"=>6, "IOT"=>6, "EMT"=>7, "FPE"=>8, "KILL"=>9, "BUS"=>10, "SEGV"=>11, "SYS"=>12, "PIPE"=>13, "ALRM"=>14, "TERM"=>15, "URG"=>16, "STOP"=>17, "TSTP"=>18, "CONT"=>19, "CHLD"=>20, "CLD"=>20, "TTIN"=>21, "TTOU"=>22, "IO"=>23, "XCPU"=>24, "XFSZ"=>25, "VTALRM"=>26, "PROF"=>27, "WINCH"=>28, "USR1"=>30, "USR2"=>31, "INFO"=>29
+
+	$ rails c / Signal.list
+	# Process.kill(9, Process.ppid)
+	# Process.kill(9, Process.pid)
+	# Process.kill("TERM", ppid)
+	# Process.kill("QUIT", Process.pid)
+
+############ Runner Scripts ############
+	# $ rails runner db/scripts/staffer_adr_mig.rb
+	# $ heroku run rails runner db/scripts/staffer_adr_mig.rb --app bds-max
+
+############
+	# $ rails runner db/scripts/staffer_scrape_date_mig.rb
+	# $ heroku run rails runner db/scripts/staffer_scrape_date_mig.rb --app bds-max
+
+
+#######################################
+######### Adam Git Express! ##########
+#######################################
+	$ git commit -am "comment"
+	$ git push origin (create pr on gh, but don't merge)
+	$ git checkout master
+	$ git merge feature
+	$ git push heroku-production
+
+############ command line - local ############
+	$ tail -f log/development.log
+	$ bundle exec puma
+
+	$!!! git force/pull/push if don't like changes.
+	$ git hist -number
+	$ git log -2
+	$ git log master -2
+
+############ Adam Heroku Express! ############
+	$ heroku logs -t --app bds-max
+	$ heroku run rails c --app bds-max
+	$ heroku ps --app bds-max
+	$ heroku run rake db:migrate --app bds-max
+	$ heroku ps:restart --app bds-max
+
+	$ heroku config:set DB_POOL=10
+
+
+############ Delayed Job ############
+	$ rake jobs:clear
+	$ heroku run rake jobs:clear --app bds-max
+
+############ Database Connections ############
+	$ bundle exec rails dbconsole
+	select count(*) from pg_stat_activity where pid <> pg_backend_pid() and usename = current_user;
+
+	/config/database.yml:
+	# production:
+	#   url:  <%= ENV["DATABASE_URL"] %>
+	#   pool: <%= ENV["DB_POOL"] || ENV['RAILS_MAX_THREADS'] || 10 %>
+
+############ Procfile ############
+	web:  bundle exec puma  -t 0:5 -p $PORT -e ${RACK_ENV:-development}
+	worker: RAILS_MAX_THREADS=${SIDEKIQ_RAILS_MAX_THREADS:-25} bundle exec sidekiq
+
+	heroku config:set SIDEKIQ_RAILS_MAX_THREADS=25
+
+==========================================
+
+########################################
+#### I.DETAILED GIT-HEROKU WORKFLOW ####
+#######################################
+
+	<Create feature branch from staging>
+	$ git checkout -b feature-branch    << MAKE SURE CURRENT BRANCH IS STAGING!
+
+	<push feature branch to staging>
+	$ git push origin staging-feature-branch
+	>> Then merge it to staging branch, not master branch
+	>> Back to local,
+		$ git checkout staging
+		$ git pull origin staging
+		$ git branch -D staging-feature-branch
+
+	<push merged staging branch to heorku-staging app>
+	$ git push heroku-staging staging:master
+
+==========================================
+
+	<push your staging branch to master>
+	$ git push origin master << MAKE SURE CURRENT BRANCH IS STAGING!
+	>> Then merge it to master branch, not staging branch
+	>> Back to local, $ git pull origin master to your MASTER
+
+	<push merged master branch to heroku-production app>
+	$ git push heroku-production master << MAKE SURE CURRENT BRANCH IS MASTER!
+
+########################################
+####### III. HEROKU COMMAND LINE #######
+#######################################
+
+############ Kill Workers ############
+		$ heroku ps:stop worker --app bds-max
+		$ heroku ps:stop run.1
+		$ heroku ps:stop worker
+		$ heroku ps:workers 0
+		$ heroku scale worker=0
+		$ heroku ps:scale worker=0
+
+############ Restart App/Workers ############
+		$ run heroku restart
+		$ heroku ps:restart
+		$ heroku ps:scale worker=1
+
+
+########################################
+####### IV. Unix Process Model ########
+#######################################
+
+	1. * Applying the Unix Process Model to Web Apps  - Heroku
+	http://adam.herokuapp.com/past/2011/5/9/applying_the_unix_process_model_to_web_apps/
+
+	2. resque-scheduler
+	https://github.com/resque/resque-scheduler#readme
+
+	3. Worker Dynos, Background Jobs and Queueing
+	https://devcenter.heroku.com/articles/background-jobs-queueing
+
+	4. Foreman - RailsCasts #281 Foreman
+	http://railscasts.com/episodes/281-foreman
+
+	5. Resque - RailsCasts #271 Resque
+	http://railscasts.com/episodes/271-resque
+
+	6. Runtime Principles - Heroku
+	https://devcenter.heroku.com/articles/runtime-principles#process-model
+
+	7. Optimizing Dyno Usage - Heroku
+
+########################################
+####### V. Delayed Jobs Schema #######
+#######################################
+
+	$ rails c
+	$ Delayed::Job.all
+	$ Delayed::Job.last
+
+	create_table "delayed_jobs", force: :cascade do |t|
+		t.integer  "priority",   default: 0, null: false
+		t.integer  "attempts",   default: 0, null: false
+		t.text     "handler",                null: false
+		t.text     "last_error"
+		t.datetime "run_at"
+		t.datetime "locked_at"
+		t.datetime "failed_at"
+		t.string   "locked_by"
+		t.string   "queue"
+		t.datetime "created_at"
+		t.datetime "updated_at"
+		t.index ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+	end
+
+########################################
+############ VI. FOREMAN ############
+#######################################
+
+	$ atom Procfile
+	$ foreman check
+	$ foreman start
+	$ foreman start faye
+	$ foreman start -c worker=4
+	$ foreman export upstart .
+
+	web: bundle exec rails server -p $PORT
+	worker: bundle exec foreman start -f Procfile.workers
+
+	worker:  bundle exec rake jobs:work
+	web: bundle exec thin start
+	job: bundle exec rake jobs:work
+
+############ Foreman & Procfile links ############
+	https://github.com/ddollar/foreman
+	https://devcenter.heroku.com/articles/procfile
+	http://railscasts.com/episodes/281-foreman
+	* https://stackoverflow.com/questions/21566721/parallel-background-tasks-on-single-worker-dyno
+	https://stackoverflow.com/questions/21566721/parallel-background-tasks-on-single-worker-dyno/21568770#21568770
+	https://stackoverflow.com/questions/18176043/does-anyone-run-more-than-one-resque-worker-in-a-heroku-dyno/19764369#19764369
+	https://devcenter.heroku.com/articles/heroku-local
+	http://blog.daviddollar.org/2011/05/06/introducing-foreman.html
+	https://github.com/tobi/delayed_job
+
+	*** AWESOME ARTICLE ON DELAYED JOBS BEST PRACTICES ***
+	https://www.sitepoint.com/delayed-jobs-best-practices/
+
+	DJ Blog: http://bica.co/2015/03/08/howto-using-activejob-with-delayedjob/
+
+############ Procfile Testing Notes ############
+	web: bundle exec rails server -p $PORT
+	worker: bundle exec foreman start -f Procfile.workers
+
+	web:  bundle exec puma  -t 0:20 -p $PORT -e ${RACK_ENV:-development}
+	worker: RAILS_MAX_THREADS=${SIDEKIQ_RAILS_MAX_THREADS:-25} bundle exec sidekiq
+
+	#### Made changes on:
+	/Users/Adam/Desktop/MaxDigital/bds_max/config/puma.rb
+	/Users/Adam/Desktop/MaxDigital/bds_max/config/database.yml
+	/Users/Adam/Desktop/MaxDigital/bds_max/Procfile
+
+	$ rails generate job test_job
+	$ bundle exec rake jobs:work
+	$ rails runner "TestJob.perform_later(1,2,3)"
+
+	$ rails generate job sample #=> app/jobs/sample_job.rb
+	$ rails runner "SampleJob.perform_later(1,2,3)"
+	$ rails runner "SampleJob.perform_later"
+
+############ rails runner ############
+	$ rails runner "SampleJob.perform_later"
+	$ rails runner "SampleJob.perform_later('Adam')"
+	# bds_max/app/jobs/sample_job.rb
+
+	$ rails generate job sample #=> app/jobs/sample_job.rb
+	$ rails generate job StafferScrapeDateMig #=> app/jobs/staffer_scrape_date_mig_job.rb
+
+	$ rails runner "StafferScrapeDateMigJob.perform_later"
+	$ rails runner "GuestsCleanupJob"
+
+	$ rails runner "GuestsCleanupJob"
+	rails runner db/scripts/staffer_scrape_date_mig.rb
+	rails runner app/jobs/staffer_scrape_date_mig_job.rb
+
+############
+	$ rails runner "NewsletterJob.perform_later"
+	newsletter_job.rb
+
+############ Delayed Job ############
+	$ rake jobs:clear
+	$ killall "foreman: master"
+
+############
+	RAILS_ENV=production script/delayed_job restart
+	app/jobs/staffer_scrape_date_mig_job.rb
+	RAILS_ENV=development script/delayed_job start
+	RAILS_ENV=development app/jobs/staffer_scrape_date_mig_job.rb/delayed_job start
+	app/jobs/staffer_scrape_date_mig_job.rb/delayed_job: Not a directory
+	bin/delayed_job
+
+important - save below
+	worker: bundle exec foreman start -f Procfile.workers
+
+############ Procfile ############
+	web: bundle exec rails server -p $PORT
+	worker: bundle exec foreman start -f Procfile.workers
+	worker: RAILS_MAX_THREADS=${SIDEKIQ_RAILS_MAX_THREADS:-25} bundle exec sidekiq
+	worker: bundle exec sidekiq -C config/sidekiq.yml
+
+	/Users/Adam/Desktop/MaxDigital/bds_max/config/sidekiq.yml
+	/Users/Adam/Desktop/MaxDigital/bds_max/config/puma.rb
+	/Users/Adam/Desktop/MaxDigital/bds_max/config/database.yml
+
+############ Environment Variables ############
+	== In IRB: ==
+	Rails.env
+	Rails.env.development?
+	Rails.env.test?
+	Rails.env.production?
+	Rails.env.your_custom_environment?
+	Rails.env
+
+	can enter: Delayed::Worker.read_ahead
+
+	ENV["MARCO"] #=> nil
+	ENV["MARCO"] = "polo" #=> polo
+	'echo $MARCO' #=> "polo\n"
+
+	ENV['RAILS_ENV'] is now deprecated, should use:
+	Rails.env
+
+############ delayed_job_worker_pool ############
+	# https://github.com/salsify/delayed_job_worker_pool
+	# https://www.salsify.com/blog/engineering/delayed-job-worker-pooling
+
+############ Load Ruby Rails File in CLI ############
+	# Link: https://stackoverflow.com/questions/10313181/pass-ruby-script-file-to-rails-console
+	# in rails c
+	# bundle exec rails runner "eval(File.read 'your_script.rb')"
+	# load './path/to/foo.rb'
+
+############ Progress ############
+	bundle exec tail -f log/development.log
+	tail -f log/development.log
+
+	# $ rails runner "PoolingGemJob.perform_later"/delayed_job start
+	# $ bin/rails runner jobs/pooling_gem_job.rb
+
+	# bin/delayed_job start
+	# bin/delayed_job -n 4 start
+	# bin/delayed_job stop
+	# rails runner "PoolingGemJob.perform_later"
+
+	PoolingGemJob.new.perform
+	PoolingGem.new.pooling_gem_starter
+	rails runner "Staffer.run_dj"
+	StaffersController.run_dj
+	testing = StaffersController.new
+	testing.run_dj
+	StaffersController.new.run_dj
+	StafferService.new.run_dj_service
+	StafferService.new.cs_starter
+	GeneralService.new.cs_starter
+
+############ grep ############
+	$ grep -w "boo" file #=> search words only
+	$ egrep -w 'word1|word2' /path/to/file #=> search 2 different words
+
+############ Rainbow ############
+	require 'rainbow'
+	puts Rainbow("even bright underlined!").yellow.underline.bright
+
+	def colored(string)
+	  indicator = Rainbow("!=>>").yellow.bright
+	  main = Rainbow(string).yellow.underline.bright
+	  "\n\n#{indicator} #{main}\n"
+	end
+
+	puts colored("happy_string")
+
+############ Sidekiq ###########
+	$ redis-server /usr/local/etc/redis.conf #=> starts redis server
+	$ bundle exec sidekiq  #=> starts sidekiq
+
+	Sidekiq: 500 Records updated in 20 sec
+	Delayed: 500 Records updated in 18 sec
+
+	Sidekiq: 4000 Records updated in 154.5 sec
+	Delayed: 4000 Records updated in 135.6 sec
+
+
+
+############ Gem Install ############
+	Link: http://bundler.io/v1.5/groups.html
+
+	$ bundle install --without test development
+	$ bundle install --without production
+
+	$ bundle install --with test development
+	$ bundle install --with production
+
+	$ bundle check
+	$ bundle update
+
+############ Bash Aliases ############
+	# My Custom Aliases bash_profile
+	alias be="bundle exec"
+	alias co="checkout"
+	alias killall="killall 'foreman: master'"
+
+#############################
+	staffers = Staffer.where(scrape_date: nil).count
+	staffers.each {|staffer| staffer.update(scrape_date: staffer.created_at) }
+
+
+############################
+
+######### SSL CERTS #######
+brew update
+brew install openssl
+brew tap raggi/ale
+brew install openssl-osx-ca
+#####
+A CA file has been bootstrapped using certificates from the SystemRoots
+keychain. To add additional certificates (e.g. the certificates added in
+the System keychain), place .pem files in
+  /usr/local/etc/openssl/certs
+
+and run
+  /usr/local/opt/openssl/bin/c_rehash
+
+This formula is keg-only, which means it was not symlinked into /usr/local,
+because Apple has deprecated use of OpenSSL in favor of its own TLS and crypto libraries.
+
+If you need to have this software first in your PATH run:
+  echo 'export PATH="/usr/local/opt/openssl/bin:$PATH"' >> ~/.bash_profile
+
+For compilers to find this software you may need to set:
+    LDFLAGS:  -L/usr/local/opt/openssl/lib
+    CPPFLAGS: -I/usr/local/opt/openssl/include
+For pkg-config to find this software you may need to set:
+    PKG_CONFIG_PATH: /usr/local/opt/openssl/lib/pkgconfig
+
+
+########################
+2.3.1 :026 > Web.reflect_on_all_associations(:has_many).map(&:class_name)
+ => ["Webing", "Act", "Cont", "Who", "Texting", "Text", "Linking", "Link", "Templating", "Template"]

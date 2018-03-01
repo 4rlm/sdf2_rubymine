@@ -1,0 +1,102 @@
+### === KILL / QUIT / RESCUE PID === ###
+
+# pid = Process.pid
+# Process.kill(1,pid) #=> Quits process, then resumes. - smoothest!!!
+# Process.kill(30,pid) #=> phase-restart / !!! seems to be working
+# Process.kill(0,pid) #=> Exits the current process, then continues.
+# Process.kill(3,pid) #=> CTRL-C / Hard Stop!
+
+# puts Signal.list
+# {"EXIT"=>0, "HUP"=>1, "INT"=>2, "QUIT"=>3, "ILL"=>4, "TRAP"=>5, "ABRT"=>6, "IOT"=>6, "EMT"=>7, "FPE"=>8, "KILL"=>9, "BUS"=>10, "SEGV"=>11, "SYS"=>12, "PIPE"=>13, "ALRM"=>14, "TERM"=>15, "URG"=>16, "STOP"=>17, "TSTP"=>18, "CONT"=>19, "CHLD"=>20, "CLD"=>20, "TTIN"=>21, "TTOU"=>22, "IO"=>23, "XCPU"=>24, "XFSZ"=>25, "VTALRM"=>26, "PROF"=>27, "WINCH"=>28, "USR1"=>30, "USR2"=>31, "INFO"=>29}
+
+
+# pid = Process.pid
+# groups = Process.groups
+# getpgrp = Process.getpgrp
+# maxgroups = Process.maxgroups
+#
+# puts "pid: #{pid}"
+# puts "groups: #{groups}"
+# puts "getpgrp: #{getpgrp}"
+# puts "maxgroups: #{maxgroups}"
+
+### == PID VIA FORK === ###
+# puts "I am #{Process.pid}"
+# Process.fork { puts "Dad is #{Process.ppid}" }
+
+### == EXIT === ###
+# puts "About to exit, via 'Process.exit!(true)' "
+# exit_now = Process.exit!(true)
+
+### == TRAP / SIGNAL == ###
+# Signal.trap(0, proc { puts "Terminating: #{$$}" })
+# Signal.trap("CLD")  { puts "Child died" }
+# fork && Process.wait
+
+### == TRAP / SIGNAL / PROCESS / KILL == ###
+# child = fork do
+#   Signal.trap("QUIT") { puts "CHILD: ok, quitting time!"; exit }
+#   puts "Sleeping for 5 seconds ..."
+#   sleep(5)
+# end
+# Process.kill("QUIT", child)
+
+
+# Signal.trap(0, proc { puts "Terminating: #{$$}" })
+# Signal.trap("CLD")  { puts "#{$$}: Child died" }
+# fork && Process.wait
+
+
+
+# binding.pry
+
+### == !!! SIGHUP / HUP / RESTART == ###
+# kill -1 <pid>
+# kill -HUP <pid>
+# kill -SIGHUP <pid>
+
+### == !!! Restart via Kernel.exec == ###
+# Kernel.exec
+
+### == Restart via system(path) == ###
+# system("ruby /path/to/my/bot.rb")
+
+### == KILL VIA FORK === ###
+# pid = fork do
+#    Signal.trap("HUP") { puts "Ouch!"; exit }
+#    puts "\n\n# ... do some work ...\n\n"
+# end
+# # ...
+# Process.kill("HUP", pid)
+# Process.wait
+#
+# puts "Did we get here? - After kill"
+# Kernel.exec()
+# pid = Process.pid
+# puts "pid: #{pid}"
+#
+# puts "Redirecting....."
+# Kernel.exec("cores/search.html.erb")
+# # system("admin/developer.html.erb")
+#
+# pid = Process.pid
+# puts "pid: #{pid}"
+
+
+
+# pid = fork do
+#    Signal.trap("HUP") { puts "Redirecting...!"; exit }
+#    #  puts "\n\n# ... do some work ...\n\n"
+#    system("admin/developer.html.erb")
+# end
+# ...
+
+# pid = Process.pid
+# puts "pid: #{pid}"
+# Process.kill("HUP", pid)
+# # Process.wait
+# # system("./cs_starter")
+# system("./sample_greeting")
+#
+# puts "\n\n==== DID WE GET HERE? ====\n\n"
+# puts "new pid: #{pid}"

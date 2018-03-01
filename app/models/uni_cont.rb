@@ -1,0 +1,2 @@
+class UniCont < ApplicationRecord
+end

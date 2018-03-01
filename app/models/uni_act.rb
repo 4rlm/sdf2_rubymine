@@ -1,0 +1,2 @@
+class UniAct < ApplicationRecord
+end

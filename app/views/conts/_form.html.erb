@@ -1,0 +1,52 @@
+<%= form_with(model: cont, local: true) do |form| %>
+  <% if cont.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(cont.errors.count, "error") %> prohibited this cont from being saved:</h2>
+
+      <ul>
+      <% cont.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field form-group">
+    <%= form.label :sts %>
+    <%= form.text_field :sts, id: :cont_sts, class: 'form-control' %>
+  </div>
+
+  <div class="field form-group">
+    <%= form.label :act_id %>
+    <%= form.number_field :act_id, id: :cont_act_id, class: 'form-control' %>
+  </div>
+
+  <div class="field form-group">
+    <%= form.label :crmc %>
+    <%= form.text_field :crmc, id: :cont_crm_cont_num, class: 'form-control' %>
+  </div>
+
+  <div class="field form-group">
+    <%= form.label :first_name %>
+    <%= form.text_field :first_name, id: :cont_first_name, class: 'form-control' %>
+  </div>
+
+  <div class="field form-group">
+    <%= form.label :last_name %>
+    <%= form.text_field :last_name, id: :cont_last_name, class: 'form-control' %>
+  </div>
+
+  <div class="field form-group">
+    <%= form.label :email %>
+    <%= form.text_field :email, id: :cont_email, class: 'form-control' %>
+  </div>
+
+  <div class="field form-group">
+    <%= form.label :act_id %>
+    <%= form.text_field :act_id, id: :cont_act_id, class: 'form-control' %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit class: 'btn btn-success pull-right' %>
+  </div>
+<% end %>

@@ -1,0 +1,2 @@
+class Dash < ApplicationRecord
+end

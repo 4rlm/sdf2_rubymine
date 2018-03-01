@@ -1,0 +1,24 @@
+Delay_Job_01: bundle exec rake jobs:work
+Delay_Job_02: bundle exec rake jobs:work
+Delay_Job_03: bundle exec rake jobs:work
+Delay_Job_04: bundle exec rake jobs:work
+Delay_Job_05: bundle exec rake jobs:work
+
+# Delay_Job_06: bundle exec rake jobs:work
+# Delay_Job_07: bundle exec rake jobs:work
+# Delay_Job_08: bundle exec rake jobs:work
+
+# Delay_Job_1: bundle exec bin/delayed_job start
+# Delay_Job_2: bundle exec bin/delayed_job start
+# Delay_Job_3: bundle exec bin/delayed_job start
+# Delay_Job_4: bundle exec bin/delayed_job start
+
+
+
+# Delay_Job_M: bundle exec bin/delayed_job -n4 start
+# Delay_Job_M: bin/delayed_job -n2 restart
+# Delay_Job_M: bin/delayed_job run
+
+# bin/delayed_job stop
+# bin/delayed_job start
+# bin/delayed_job stop

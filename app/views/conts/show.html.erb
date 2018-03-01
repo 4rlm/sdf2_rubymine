@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Source:</strong>
+  <%= @cont.src %>
+</p>
+
+<p>
+  <strong>sts:</strong>
+  <%= @cont.sts %>
+</p>
+
+<p>
+  <strong>Act:</strong>
+  <%= @cont.act_id %>
+</p>
+
+<p>
+  <strong>Crm cont num:</strong>
+  <%= @cont.crmc %>
+</p>
+
+<p>
+  <strong>First name:</strong>
+  <%= @cont.first_name %>
+</p>
+
+<p>
+  <strong>Last name:</strong>
+  <%= @cont.last_name %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @cont.email %>
+</p>
+
+<p>
+  <strong>Act:</strong>
+  <%= @cont.act %>
+</p>
+
+<%= link_to 'Edit', edit_cont_path(@cont) %> |
+<%= link_to 'Back', conts_path %>

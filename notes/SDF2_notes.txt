@@ -1,0 +1,63 @@
+
+act = Act.create(src: 'src_1', sts: 'sts_1', crma: 'crma_1', name: 'sample_act_1', conts_attributes: [src: 'src_1', sts: 'sts_1', crmc: 'crm_cont_num_1', first_name: 'first_name_1', last_name: 'last_name_1', email: 'email_1'], webs_attributes: [src: 'src_1', sts: 'sts_1', url: 'url_1', staff_page: 'staff_page_1', locations_page: 'locations_page_1'], adrs_attributes: [src: 'src_1', sts: 'sts_1', street: 'street_1', unit: 'unit_1', city: 'city_1', state: 'state_1', zip: 'zip_1', pin: 'pin_1', latitude: 'latitude_1', longitude: 'longitude_1'] )
+
+======================
+
+cont = Cont.create(src: 'src_7', sts: 'sts_7', crmc: 'crm_cont_num_7', first_name: 'first_name_7', last_name: 'last_name_7', email: 'email_7', titles_attributes: [job_title: 'job_title_1'], descriptions_attributes: [job_desc: 'job_description_1'], phones_attributes: [src: 'src_1', sts: 'sts_1', phone: 'phone_1'])
+
+act = Act.find_or_create_by(crma: 'crma_7')
+act.conts << cont
+
+
+========================
+
+
+adr = Adr.find_or_create_by(street: 'street_2')
+
+
+================
+
+act = Act.create(
+  src: 'src_1', sts: 'sts_1', crma: 'crma_1', name: 'sample_act_1',
+  conts_attributes: [src: 'src_1', sts: 'sts_1', crmc: 'crm_cont_num_1', first_name: 'first_name_1', last_name: 'last_name_1', email: 'email_1'],
+  webs_attributes: [src: 'src_1', sts: 'sts_1', url: 'url_1', staff_page: 'staff_page_1', locations_page: 'locations_page_1'],
+  adrs_attributes: [] )
+
+  act.assign_attributes(adrs_attributes: [])
+
+
+  ==============================
+
+
+rails g model StarAct
+
+  Acts
+    t.string "act_src"
+    t.string "act_sts"
+    t.string "crma"
+    t.string "name"
+
+  Adrs
+    t.string "adr_src"
+    t.string "adr_gp_sts"
+    t.string "street"
+    t.string "unit"
+    t.string "city"
+    t.string "state"
+    t.string "zip"
+    t.string "full_adr"
+    t.string "pin"
+    t.float "latitude"
+    t.float "longitude"
+
+  Phones
+    t.string "phone_src"
+    t.string "phone_sts"
+    t.string "phone"
+
+  Webs
+    t.string "web_src"
+    t.string "url_ver_sts"
+    t.string "url"
+    t.string "staff_page"
+    t.string "locations_page"

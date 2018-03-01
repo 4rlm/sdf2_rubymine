@@ -1,0 +1,551 @@
+======================================
+1) RAILS NEW (app_name)
+======================================
+
+$ rails new phronetic
+$ cd phronetic
+======================================
+
+
+======================================
+2) Add Gems
+PATH: Gemfile
+======================================
+
+# Use hirb for rails c table view.  Then in rails c:
+gem 'hirb'
+# require 'hirb'
+# Hirb.enable
+
+gem 'pry'
+
+---------
+$ be bundle install
+
+======================================
+
+
+======================================
+3) APPLICATION CONFIG
+PATH: config/application.rb
+======================================
+
+config.autoload_paths << File.join(config.root, "lib")
+config.autoload_paths += %W(#{config.root}/controllers/concerns)
+# config.autoload_paths += %W(#{config.root}/lib/servicers)
+config.autoload_paths << Rails.root.join('lib/servicers')
+config.autoload_paths += Dir["#{config.root}/lib/servicers"]
+
+
+======================================
+4) CREATE MODULE
+PATH: app/controllers/concerns/act_parser.rb
+======================================
+
+module ActParser
+  extend ActiveSupport::Concern
+
+  def welcome
+    puts "Welcome to the ActParser!"
+  end
+
+end
+======================================
+
+
+======================================
+5) CREATE SERVICER CLASS
+PATH: lib/servicers/act_saver.rb
+======================================
+
+## Call: ActSaver.new.start_act_saver
+## Description: ........
+
+class ActSaver
+  include ActParser
+
+  def initialize
+    puts "\n\n== Welcome to the ActSaver Class! ==\n\n"
+  end
+
+  def start_act_saver
+    welcome #=> via ActParser
+    sampler
+  end
+
+
+  def sampler
+    puts "In the sampler!"
+
+    act_num_id = 'ac_100'
+    act_num_id = 'ac_200'
+    act_num_id = 'ac_300'
+    act_num_id = 'ac_400'
+    act_num_id = 'ac_500'
+
+    act_name = 'Act 100'
+    act_name = 'Act 200'
+    act_name = 'Act 300'
+    act_name = 'Act 400'
+    act_name = 'Act 500'
+
+    phone = '888-888-8888'
+    phone = '777-777-7777'
+    phone = '555-555-5555'
+    phone = '444-444-4444'
+    phone = '333-333-3333'
+
+    # act_num = ActNum.find_or_create_by(act_num: act_num_id)
+    # act_num.act_name = ActName.find_or_create_by(act_name: act_name)
+    # # act_num.act_names << ActName.find_or_create_by(act_name: act_name)
+    # act_num.phones << Phone.find_or_create_by(phone: phone)
+
+  end
+
+
+end
+======================================
+
+
+
+<><>><><><><> A. SCAFFOLD! <><>><><><><>
+
+
+
+======================================
+6) SCAFFOLD
+======================================
+
+ActNum----(MAIN)
+  $ rails g scaffold ActNum sts src act_num
+    t.index :act_num, unique: true
+
+  $ rails g scaffold ActNuming
+    create_table :act_numings do |t|
+      t.references :act_num, index: true
+      t.references :act_numable, polymorphic: true, index: true
+
+      t.timestamps
+    end
+    (after 1st end)>> add_index :act_numings, [:act_num_id, :act_numable_id], unique: true  #=> And in Model!
+
+ActName----
+  $ rails g scaffold ActName sts act_name
+    t.index :act_name, unique: true
+
+  $ rails g scaffold ActNaming
+    t.references :act_name, index: true
+    t.references :act_namable, polymorphic: true, index: true
+
+    (after 1st end)>> add_index :act_namings, [:act_name_id, :act_namable_id], unique: true  #=> And in Model!
+
+Phone----
+  $ rails g scaffold Phone sts phone
+    t.index :phone, unique: true
+
+  $ rails g scaffold Phoning
+    t.references :phone, index: true
+    t.references :phonable, polymorphic: true, index: true
+
+    (after 1st end)>> add_index :phonings, [:phone_id, :phonable_id], unique: true  #=> And in Model!
+
+Url----
+  $ rails g scaffold Url sts url
+    t.index :url, unique: true
+
+  $ rails g scaffold Urling
+    t.references :url, index: true
+    t.references :urlable, polymorphic: true, index: true
+
+    (after 1st end)>> add_index :urlings, [:url_id, :urlable_id], unique: true  #=> And in Model!
+
+
+==== later ====
+    ContNum----(MAIN)
+      $ rails g scaffold ContNum sts src cont_num
+        t.index :cont_num, unique: true
+
+      $ rails g scaffold ContNuming
+        t.references :cont_num, index: true
+        t.references :cont_numable, polymorphic: true, index: true
+
+    ContName----
+      $ rails g scaffold ContName sts first_name last_name full_name
+        t.index :full_name, unique: true
+
+      $ rails g scaffold ContNaming
+        t.references :full_name, index: true
+        t.references :contable, polymorphic: true, index: true
+
+    Adr----
+      $ rails g scaffold Adr sts street city state zip full pin
+        t.index :full, unique: true
+
+      $ rails g scaffold Adring
+        t.references :full, index: true
+        t.references :adrable, polymorphic: true, index: true
+
+        (after 1st end)>> add_index :adrings, [:adring_id, :adrable_id], unique: true  #=> And in Model!
+
+
+============
+
+
+$ rake db:migrate
+
+    ========= Future =========
+    $ rails g scaffold Bot sts
+    $ rails g scaffold Geo sts
+    $ rails g scaffold Who sts
+======================================
+
+
+<><>><><><><> B. MODEL CLASSES! <><>><><><><>
+
+
+======================================
+7) MODEL CLASSES
+======================================
+
+ActNum----(MAIN)
+  -ActNum
+    validates :act_num, uniqueness: true
+    has_many :act_numings
+
+    has_one :act_naming, as: :act_namable
+    has_one :act_name, through: :act_naming
+
+    has_many :phonings, as: :phonable
+    has_many :phones, through: :phonings
+
+    has_one :urling, as: :urlable
+    has_one :url, through: :urling
+
+    #######
+    # has_many :cont_numings, as: :cont_numable
+    # has_many :cont_nums, through: :cont_numings
+
+    # has_one :adring, as: :adrable
+    # has_one :adr, through: :adring
+    #######
+
+  -ActNuming
+    belongs_to :act_numable, polymorphic: true
+    belongs_to :act_num
+
+    validates :act_numable_id, uniqueness: true
+    validates :act_num_id, :uniqueness => { scope: :act_numable_id } #=> ALSO IN MIGRATION!
+
+
+ActName----
+  -ActName
+    validates :act_name, uniqueness: true
+    has_many :act_namings
+    has_many :act_nums, through: :act_namings, src: :act_namable, src_type: :ActNum
+
+  -ActNaming
+    belongs_to :act_namable, polymorphic: true
+    belongs_to :act_name
+
+    validates :act_namable_id, uniqueness: true
+    validates :act_name_id, :uniqueness => { scope: :act_namable_id } #=> ALSO IN MIGRATION!
+
+
+Phone----
+  -Phone
+    has_many :phonings
+    has_many :act_nums, through: :phonings, src: :phonable, src_type: :ActNum
+    # has_many :cont_nums, through: :phonings, src: :phonable, src_type: :ContNum
+
+    validates :phone, uniqueness: true
+
+  -Phoning
+    belongs_to :phonable, polymorphic: true
+    belongs_to :phone
+
+    validates :phone_id, :uniqueness => { scope: :phonable_id } #=> ALSO IN MIGRATION!
+
+
+Url----
+  -Url
+    validates :url, uniqueness: true
+    has_many :urlings
+    has_many :act_nums, through: :urlings, src: :urlable, src_type: :ActNum
+
+  -Urling
+    belongs_to :urlable, polymorphic: true
+    belongs_to :url
+
+    validates :urlable_id, uniqueness: true
+    validates :url_id, :uniqueness => { scope: :urlable_id } #=> ALSO IN MIGRATION!
+
+  Adr----
+    -Adr
+      validates :full, uniqueness: true
+      has_many :adrings
+      has_many :act_nums, through: :adrings, src: :adrable, src_type: :ActNum
+
+    -Adring
+      belongs_to :adrable, polymorphic: true
+      belongs_to :adr
+
+      validates :adrable_id, uniqueness: true
+      validates :adr_id, :uniqueness => { scope: :adrable_id } #=> ALSO IN MIGRATION!
+
+
+==== later ====
+
+    ContNum----(MAIN)
+      -ContNum
+        validates :cont_num, uniqueness: true
+        has_many :cont_numings
+
+        has_many :cont_names, through: :cont_numings, src: :cont_numable, src_type: :ContNames
+
+        #######
+        has_many :cont_namings, as: :cont_namable
+        has_many :cont_names, through: :cont_namings
+
+        has_many :act_numings, as: :act_numable
+        has_many :act_nums, through: :act_numings
+
+        has_many :phonings, as: :phonable
+        has_many :phones, through: :phonings
+
+        has_many :urlings, as: :urlable
+        has_many :urls, through: :urlings
+
+        has_many :adrings, as: :adrable
+        has_many :adrs, through: :adrings
+        #######
+
+      -ContNuming
+        belongs_to :cont_numable, polymorphic: true
+        belongs_to :cont_num
+
+    ContName----
+      -ContName
+        validates :full_name, uniqueness: true
+        has_many :cont_namings
+        has_many :cont_nums, through: :cont_namings, src: :cont_namable, src_type: :ContNum
+
+      -ContNaming
+        belongs_to :cont_namable, polymorphic: true
+        belongs_to :cont_name
+============
+
+========= end ============
+
+
+
+<><>><><><><> B. SAMPLE DATA! <><>><><><><>
+
+
+
+======================================
+4) Add Sample Data (VIA RAILS CONSOLE)
+======================================
+
+$ rails c
+
+# require 'hirb'
+# Hirb.enable
+
+========== Add Acts & Phone:
+
+act_num_id = 'ac_100'
+act_num_id = 'ac_200'
+act_num_id = 'ac_300'
+act_num_id = 'ac_400'
+act_num_id = 'ac_500'
+
+act_name = 'Act 100'
+act_name = 'Act 200'
+act_name = 'Act 300'
+act_name = 'Act 400'
+act_name = 'Act 500'
+
+phone = '888-888-8888'
+phone = '777-777-7777'
+phone = '555-555-5555'
+phone = '444-444-4444'
+phone = '333-333-3333'
+
+act_num = ActNum.find_or_create_by(act_num: act_num_id)
+act_num.act_name = ActName.find_or_create_by(act_name: act_name)
+# act_num.act_names << ActName.find_or_create_by(act_name: act_name)
+act_num.phones << Phone.find_or_create_by(phone: phone)
+
+======================================
+
+
+======================================
+5) View Data
+======================================
+
+ActNum.all
+ActNuming.all
+
+ActName.all
+ActNaming.all
+
+Phone.all
+Phoning.all
+
+act_num.act_name
+Phone.last.phonable
+======================================
+
+
+
+======================================
+9) (Old - Reference) SERVICER CLASS
+PATH: lib/servicers/act_saver.rb
+======================================
+
+
+## Call: ActSaver.new.start_act_saver
+## Description: ........
+
+class ActSaver
+  # include ActParser
+
+  def initialize
+    puts "\n\n== Welcome to the ActSaver Class! ==\n\n"
+  end
+
+
+  def start_act_saver
+    # welcome
+    # query_act_hashes
+    sampler
+  end
+
+
+  #######################################
+
+  def sampler
+    puts "In the sampler!"
+
+    act_num_id = 'ac_100'
+    act_num_id = 'ac_200'
+    act_num_id = 'ac_300'
+    act_num_id = 'ac_400'
+    act_num_id = 'ac_500'
+
+    act_name = 'Act 100'
+    act_name = 'Act 200'
+    act_name = 'Act 300'
+    act_name = 'Act 400'
+    act_name = 'Act 500'
+
+    phone = '888-888-8888'
+    phone = '777-777-7777'
+    phone = '555-555-5555'
+    phone = '444-444-4444'
+    phone = '333-333-3333'
+
+    act_num = ActNum.find_or_create_by(act_num: act_num_id)
+    act_num.act_name = ActName.find_or_create_by(act_name: act_name)
+    # act_num.act_names << ActName.find_or_create_by(act_name: act_name)
+    act_num.phones << Phone.find_or_create_by(phone: phone)
+
+  end
+
+  #######################################
+
+
+  def query_act_hashes
+    puts "Querying Act Hash, then Saving to DB..."
+    # raw_act_hashes = []
+    # act_hsh = {crm_id: 'HERE', crm_id_category: 'HERE', crm_id_src: 'HERE', act_sts: 'HERE', act_src: 'HERE', url: 'HERE', url_sts: 'HERE', org_name: 'HERE', street: 'HERE', city: 'HERE', zip: 'HERE', state: 'HERE', full_adr: 'HERE', pin: 'HERE', phone: 'HERE'}
+
+    act_hsh = {crm_id: 'ac_100', crm_id_category: 'act', crm_id_src: 'crm', act_sts: 'imported', act_src: 'crm', url: 'http://www.sample123.com', url_sts: 'Valid', org_name: 'Happy Cars 123', street: '123 Main St.', city: 'Happytown', state: 'AZ', zip: '12345', full_adr: '123 Main St., Happytown, AZ, 12345', pin: 's123-z12345', phone: '(123) 456-7890'}
+
+    parse_act_hsh(act_hsh)
+  end
+
+  def parse_act_hsh(act_hsh)
+    puts "Parsing Act Hash, then Saving to DB..."
+
+    @crm_data = nil
+    @act_data = nil
+    @url_data = nil
+    @org_data = nil
+    @adr_data = nil
+    @phone_data = nil
+
+    @crm_data = { crm_id: act_hsh[:crm_id], category: act_hsh[:crm_id_category], src: act_hsh[:crm_id_src] }
+    @act_data = { sts: act_hsh[:act_sts], src: act_hsh[:act_src] }
+    @url_data = { url: act_hsh[:url], sts: act_hsh[:url_sts] }
+    @org_data = { name: act_hsh[:org_name] }
+    @adr_data = { street: act_hsh[:street], city: act_hsh[:city], zip: act_hsh[:zip], state: act_hsh[:state], full_adr: act_hsh[:full_adr], pin: act_hsh[:pin] }
+    @phone_data = { phone: act_hsh[:phone] }
+
+    save_or_update_db
+  end
+
+  def save_or_update_db
+    # Act.where(whatever: "condition").includes(:idnums)
+    # Act.all.includes(:idnums).map(&:idnums)
+    # Act.includes(:idnums).map(&:idnums)
+    # Act.includes(:idnums).where(idnums: {crm_id: 'ac_100'})
+    # Act.includes(:idnums, :phones).where(idnums: {crm_id: 'ac_100'}).where(phones: {phone: '(123) 456-7890'})
+    # crm_id_sts = Crm.find_by(crm_id: @crm_data[:crm_id]).present?
+
+    # Act.includes(:idnums).where(idnums: {crm_id: 'ac_100'})
+    # Crm.find_by(crm_id: 'ac_100')
+    #
+    # Act.includes(:idnums).where(idnums: {crm_id: 'ac_100'})
+    #
+    # User.create_with(last_name: 'Johansson').find_or_create_by(first_name: 'Scarlett')
+    #
+    # Crm.find_by(crm_id: 'ac_100')
+    #
+    # , act_sts: 'imported', act_src: 'crm'
+    #
+    # Act.find_or_create_by(sts: 'imported', src: 'crm')
+    #
+    # .includes(:idnums).find_or_create_by(idnums: {crm_id: 'ac_100', crm_id_category: 'act', crm_id_src: 'crm'})
+
+
+
+
+
+    # # crm_id_sts = Crm.find_by(crm_id: 'ac_100').present?
+    # crm_id_sts = Crm.find_by(crm_id: @crm_data[:crm_id]).present?
+    #
+    # if crm_id_sts == false
+    #   puts "Act CRM ID: Unique - Saving to DB!"
+    #   act = Act.create(@act_data)
+    #   act.idnums << Crm.create(@crm_data)
+    #
+    #   act.orgs << Org.find_or_create_by(@org_data)
+    #   act.urls << Url.find_or_create_by(@url_data)
+    #   act.phones << Phone.find_or_create_by(@phone_data)
+    #   act.adrs << Adr.find_or_create_by(@adr_data)
+    # else
+    #   puts "Act CRM ID: Duplicate - Rollback"
+    # end
+
+
+    # crm_id_sts = Crm.find_by(crm_id: 'ac_100').present?
+    crm_id_sts = Crm.find_by(crm_id: @crm_data[:crm_id]).present?
+
+    if crm_id_sts == false
+      puts "Act CRM ID: Unique - Saving to DB!"
+      act = Act.create(@act_data)
+      act.idnums << Crm.create(@crm_data)
+
+      act.orgs << Org.find_or_create_by(@org_data)
+      act.urls << Url.find_or_create_by(@url_data)
+      act.phones << Phone.find_or_create_by(@phone_data)
+      act.adrs << Adr.find_or_create_by(@adr_data)
+    else
+      puts "Act CRM ID: Duplicate - Rollback"
+    end
+
+  end
+
+
+end

@@ -1,0 +1,1392 @@
+9/18 sts:
+important: DB development.sqlite3 and each csv file moved out of 'db' b/c too big for github.  Just copy them over from import_sdf_db_backups dir.
+
+Need to rake db:create, rake db:migrate
+
+1) Completed 1-4 below.  Csv files of each saved in db and in poly rails dir.
+2) Formatted Who csv, but missing full addr and zip pin, so need to grab converter from Max and make module.
+3) Currently formatting staffers csv to prepare for import, then need to make CsvToolParser.new.import_conts
+
+############## NEW BELOW (POLY MIXED) ##############
+Tips:
+Safe Navigation Operator: nil&.strip
+Try Method: nil.try(:strip)
+###################
+Import Steps:
+1) Done- Import to Url from indexers urls => CsvToolParser.new.import_urls
+2) Done- Import to Act from cores => CsvToolParser.new.import_acts
+3) Done- Import to Act from indexers => CsvToolParser.new.import_acts
+4) Done- Import to Act from locations => CsvToolParser.new.import_acts
+5) Pend- Import to Act from who => CsvToolParser.new.import_acts
+6) Import to Conts from conts => CsvToolParser.new.import_conts
+7) Import to sts from combination across all max models.
+** Phones and adrs are imported with Act, so no need to do separately.
+
+======================================
+6) SCAFFOLD
+======================================
+Question: Will it belong to more than one thing?
+
+Act----(mixed)
+  $ rails g scaffold Act sts act_num:uniq:index
+
+Cont----(non-poly)
+  $ rails g scaffold Cont act:references cont_num:uniq:index src sts full_name first_name last_name email job_title
+    add_index :conts, [:full_name, :cont_num, :email, :job_title], unique: true, name: 'cont_index' #=> And in Model!
+
+Adr----(poly)
+  $ rails g scaffold Adr sts street city state zip full:uniq:index pin
+
+  $ rails g scaffold Adring adr:references{index} adrable:references{polymorphic}:index
+    add_index :adrings, [:adring_id, :adrable_type, :adrable_id], unique: true, name: 'adrings_index' #=> And in Model!
+
+Phone----(poly)
+  $ rails g scaffold Phone sts phone:uniq:index
+
+  $ rails g scaffold Phoning phone:references{index} phonable:references{polymorphic}:index
+    add_index :phonings, [:phone_id, :phonable_type, :phonable_id], unique: true, name: 'phonings_index' #=> And in Model!  #=> And in Model!
+
+Url----(poly)
+  $ rails g scaffold Url archive:boolean redirects_to:integer sts url:uniq:index staff_page locations_page
+
+  $ rails g scaffold Urling url:references{index} urlable:references{polymorphic}:index
+    add_index :urlings, [:url_id, :urlable_type, :urlable_id], unique: true, name: 'urlings_index' #=> And in Model!  #=> And in Model!
+
+##############
+UrlBot----(non-poly)
+$ rails g scaffold UrlBot
+  url:references
+  redirect_sts
+  url_ver_date:datetime
+
+  ---- headers from indexers ---
+  raw_url	redirect_sts	clean_url	indexer_sts	staff_url	staff_text	location_url	location_text	template	crm_id_arr	created_at	updated_at	loc_sts	stf_sts	cont_sts	conts_link	act_name	rt_sts	cont_sts	full_addr	street	city	state	zip	phone	phones	act_pin	raw_street	who_sts	geo_sts
+
+##############
+
+
+======================================
+7) MODEL CLASSES
+======================================
+
+Act
+  -Act
+    validates :act_num, uniqueness: true
+    has_many :conts
+    #######################
+
+    has_one :adring, as: :adrable
+    has_one :adr, through: :adring
+
+    has_many :phonings, as: :phonable
+    has_many :phones, through: :phonings
+
+    has_one :urling, as: :urlable
+    has_one :url, through: :urling
+
+    accepts_nested_attributes_for :conts, :adr, :phones, :url
+    # accepts_nested_attributes_for :avatar, allow_destroy: true
+
+Cont
+  -Cont
+    belongs_to :act
+
+    validates :full_name, presence: true, case_sensitive: false
+    validates_uniqueness_of :cont_num, allow_blank: true, allow_nil: true
+    validates_uniqueness_of :full_name, allow_blank: true, allow_nil: true, :scope => [:act_id, :full_name, :email, :job_title], case_sensitive: false
+
+    has_many :phonings, as: :phonable
+    has_many :phones, through: :phonings
+
+    accepts_nested_attributes_for :phones, allow_destroy: true
+
+Adr
+  -Adr
+    validates :full, uniqueness: true
+
+    has_many :adrings
+    has_many :act_nums, through: :adrings, src: :adrable, src_type: :Act
+
+  -Adring
+    belongs_to :adrable, polymorphic: true
+    belongs_to :adr
+
+    validates :adr_id, :uniqueness => { :scope => [:adrable_type, :adrable_id] } #=> ALSO IN MIGRATION!
+
+Phone
+  -Phone
+    validates :phone, uniqueness: true
+    has_many :phonings
+    has_many :act_nums, through: :phonings, src: :phonable, src_type: :Act
+
+  -Phoning
+    belongs_to :phonable, polymorphic: true
+    belongs_to :phone
+
+    validates :phone_id, :uniqueness => { :scope => [:phonable_type, :phonable_id] } #=> ALSO IN MIGRATION!
+
+Url
+  -Url
+    validates :url, uniqueness: true
+    has_many :urlings
+
+    has_many :act_nums, through: :urlings, src: :urlable, src_type: :Act
+
+  -Urling
+    belongs_to :urlable, polymorphic: true
+    belongs_to :url
+
+    validates :url_id, :uniqueness => { :scope => [:urlable_type, :urlable_id] } #=> ALSO IN MIGRATION!
+
+
+
+
+======================================
+8) Add Data
+======================================
+
+
+
+######## OLD DATA ENTRY BELOW ########
+>>>> Add acts
+act_num_raw = 'ac_100'
+act_name_raw = 'Act 100'
+phone_raw = '100-100-1000'
+url_raw = 'http://www.100.com'
+full_raw = '100 Main St, Austin, TX, 78735'
+-------------------------------
+act_num_raw = 'ac_200'
+act_name_raw = 'Act 200'
+phone_raw = '200-200-2000'
+url_raw = 'http://www.200.com'
+full_raw = '200 Main St, Austin, TX, 78735'
+-------------------------------
+act_num_raw = 'ac_300'
+act_name_raw = 'Act 300'
+phone_raw = '300-300-3000'
+url_raw = 'http://www.300.com'
+full_raw = '300 Main St, Austin, TX, 78735'
+-------------------------------
+act_num = Act.find_or_create_by(act_num: act_num_raw, act_name: act_name_raw)
+act_num.phones << Phone.find_or_create_by(phone: phone_raw)
+act_num.url = Url.find_or_create_by(url: url_raw)
+act_num.adr = Adr.find_or_create_by(full: full_raw)
+
+act_num = Act.find_by(act_num: 'ac_100')
+
+==View Data
+Act.all
+Acting.all
+
+Phone.all
+Phoning.all
+
+Url.all
+Urling.all
+
+Adr.all
+Adring.all
+
+--------------- IMPORTANT !!!
+
+
+Cont.new(act_id: 1, full_name: "Gwangbae Kim").save
+cont = Cont.all.first
+
+act = Act.first
+act.conts.first.full_name
+
+cont = Cont.where(full_name: "Gwangbae Kim").first
+cont.act.act_name
+-----
+
+act = Act.find(1)
+act.conts.build(full_name: "Master of Lorem Ipsum").save
+act.conts.first.full_name
+----------------------------
+user.profiles.build(name: "Master of Lorem Ipsum").save
+user.profiles.first.name
+
+------
+:act_id, :full_name, :email, :job_title
+
+act_id = 1
+full_name = 'Cont 100'
+email = '100@cont.com'
+job_title = 'Job 100'
+
+cont = Cont.find_or_create_by(act_id: act_id, full_name: full_name, email: email, job_title: job_title)
+cont.phones << Phone.find_or_create_by(phone: phone_raw)
+----------------------
+act_id = 1
+full_name = 'Cont 300'
+email = 'happy'
+job_title = 'no'
+----------------------
+act_id = 1
+full_name = nil
+email = 'www.800.com'
+job_title = 'Job 800'
+
+cont = Cont.find_or_create_by(act_id: act_id, full_name: full_name, email: email, job_title: job_title)
+
+======
+validates_uniqueness_of :acronym, :allow_blank => true, :scope => [:group_id], :case_sensitive => false
+
+
+
+
+
+
+
+
+------
+
+
+
+>>>> Add Conts
+-------------------------------
+act_num = Act.find_by(act_num: 'ac_100')
+cont_num_raw = 'con_100'
+full_name_raw = 'Cont 100'
+email_raw = '100@cont.com'
+job_title_raw = 'Job 100'
+phone_raw = '100-100-1000'
+-------------------------------
+act_num = Act.find_by(act_num: 'ac_200')
+cont_num_raw = 'con_200'
+full_name_raw = 'Cont 200'
+email_raw = '200@cont.com'
+job_title_raw = 'Job 200'
+phone_raw = '200-200-2000'
+-------------------------------
+act_num = Act.find_by(act_num: 'ac_300')
+cont_num_raw = 'con_300'
+full_name_raw = 'Cont 300'
+email_raw = '300@cont.com'
+job_title_raw = 'Job 300'
+phone_raw = '300-300-3000'
+-------------------------------
+act_num = Act.find_by(act_num: 'ac_100')
+cont_num_raw = 'con_101'
+full_name_raw = 'Cont 101'
+email_raw = '101@cont.com'
+job_title_raw = 'Job 101'
+phone_raw = '100-101-1010'
+-------------------------------
+act_num = Act.find_by(act_num: 'ac_200')
+cont_num_raw = 'con_202'
+full_name_raw = 'Cont 202'
+email_raw = '202@cont.com'
+job_title_raw = 'Job 202'
+phone_raw = '202-202-2020'
+-------------------------------
+act_num = Act.find_by(act_num: 'ac_300')
+cont_num_raw = 'con_303'
+full_name_raw = 'Cont 303'
+email_raw = '303@cont.com'
+job_title_raw = 'Job 303'
+phone_raw = '303-303-3030'
+
+cont_num = Cont.find_or_create_by(cont_num: cont_num_raw)
+cont_num.update(full_name: full_name_raw, email: email_raw, job_title: job_title_raw)
+
+cont = Cont.find_or_create_by(cont_num: cont_num_raw, full_name: full_name_raw, email: email_raw, job_title: job_title_raw)
+cont.phones << Phone.find_or_create_by(phone: phone_raw)
+cont.act_id = act_num
+
+
+cont_num = Cont.find_or_create_by(cont_num: cont_num_raw, full_name: full_name_raw, email: email_raw, job_title: job_title_raw)
+cont_num.phones << Phone.find_or_create_by(phone: phone_raw)
+cont_num.act = act_num
+
+----
+cont_num = Cont.find_by(cont_num: 'con_100')
+cont_num.act
+act_num = Act.find_by(act_num: 'ac_100')
+----
+
+
+
+$$$$$$ Special Query Starts $$$$$$
+
+act_name_raw = 'Act 300'
+phone_raw = '300-300-3000'
+url_raw = 'http://www.300.com'
+full_raw = '300 Main St, Austin, TX, 78735'
+
+act = Act.find_or_create_by(act_name: act_name_raw)
+act.phones << Phone.find_or_create_by(phone: phone_raw)
+act.url = Url.find_or_create_by(url: url_raw)
+act.adr = Adr.find_or_create_by(full: full_raw)
+
+act = Act.find_by(act_num: 'ac_100')
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Y conts = Cont.includes(:act).all
+Y conts.first.act.id
+Y Cont.includes(:act).where(acts: {id: 1}).first
+
+Y Cont.includes(:act).where(acts: {id: 1}, conts: {id: 1}).first
+Y Cont.includes(:act).where(acts: {id: 1}).where(conts: {id: 1}).first
+
+Y Cont.includes(:act).where(acts: {id: 1}, conts: {full_name: 'Cont 100'}).first
+Y Cont.includes(:act).where(acts: {id: 1}).where(conts: {full_name: 'Cont 100'}).first
+===============
+
+Y Cont.find_by(full_name: 'Cont 100')
+Y Cont.includes(:act).find_by(full_name: 'Cont 100')
+Y Cont.includes(:act).find_by(acts: {id: 1})
+
+Y Cont.includes(:act).find_by(acts: {id: 2}, conts: {full_name: 'Cont 300'})
+
+
+
+
+
+>> IMPORTANT - HOW ????<<
+conts = Act.find(1).conts
+conts.find_or_create_by(full_name: 'why?')
+>> IMPORTANT <<
+
+conts = Act.find(1).conts
+
+
+
+
+why_not? = Cont.includes(:act).find_or_create_by(act: {id: 2}, cont: {full_name: 'Cont 300'})
+
+but_this_does = Act.includes(:conts).find_or_create_by(acts: {id: 1}, cont: {full_name: 'Cont 300'})
+
+
+
+
+
+~~~~~~~~~~~~~~~~~~~~~
+act_num = Act.find_by(act_num: 'ac_300')
+cont_num_raw = 'con_303'
+full_name_raw = 'Cont 303'
+email_raw = '303@cont.com'
+job_title_raw = 'Job 303'
+phone_raw = '303-303-3030'
+
+
+~~~~~~~~~~~~~~~~~~~~~~
+
+
+===============
+########### Eager Loading ###########
+
+Post.includes(:author, { comments: { author: :gravatar } }).each do |post|
+
+act_num_id = 'ac_100'
+act_name = 'Act 100'
+act_num = ActNum.find_or_create_by(act_num: act_num_id)
+
+act_num = ActNum.includes(:act_name, :url, :phones, :adr).where(act_num: 'ac_100')
+act_num = ActNum.includes(:act_numable)
+Adr.includes(:adring)
+ActName.includes(:act_namings)
+Act.includes(:idnums, :phones).where(idnums: {crm_id: 'ac_100'}).where(phones: {phone: '(123) 456-7890'})
+##############################
+
+
+
+======
+
+act_id = cont.act.id #=> 1
+Cont.where
+
+cont = Cont.find_or_create_by(full_name: full_name_raw, email: email_raw, job_title: job_title_raw)
+
+cont = Cont.find_by(full_name: 'Cont 100')
+cont = Cont.find_by(act.id: 1)
+
+
+$$$$$$ Special Query Ends $$$$$$
+
+
+
+
+
+
+++++++++++ CRAZY BEGINS ++++++++++
+rails c
+Hirb.enable
+
+-----
+act = Act.all.first
+act.cont_nums
+
+cont = Cont.all.first
+cont.act
+
+
+----- crazy...
+act_num_raw = 'ac_100'
+act_name_raw = 'Act 100'
+url_raw = 'http://www.100.com'
+full_raw = '100 Main St, Austin, TX, 78735'
+
+act_num = Act.find_or_create_by(act_num: act_num_raw, act_name: act_name_raw)
+act_num.url = Url.find_or_create_by(url: url_raw)
+act_num.adr = Adr.find_or_create_by(full: full_raw)
+
+cont_num_raw = 'con_100'
+full_name_raw = 'Cont 100'
+phone_raw = '100-100-1000'
+
+cont_num = Cont.find_or_create_by(cont_num: cont_num_raw, full_name: full_name_raw)
+cont_num.phones << Phone.find_or_create_by(phone: phone_raw)
+
+
+act_num.adr
+act_num.cont_nums << cont_num
+act_num.cont_nums |>> no such column: actings.act_id
+
+------ still crazy...
+
+cont_num.phones
+cont_num.act = act_num
+cont_num.act |>> no such column: actings.act_id
+
+
++++++++++++ CRAZY ENDS +++++++++++
+
+
+
+==View Data
+Act.all
+Acting.all
+
+Phone.all
+Phoning.all
+
+
+
+
+
+############## NEW ABOVE (POLY MIXED) ##############
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############## OLD BELOW (polymorphic ONLY)##############
+==============================================
+Steps to Create Polymorphic Associations for SDF
+Acts, Conts, Phones, Adrs, Urls
+======================================
+http://karimbutt.github.io/blog/2015/01/03/step-by-step-guide-to-polymorphic-associations-in-rails/
+
+
+======================================
+1) RAILS NEW (app_name)
+======================================
+
+$ rails new phronetic
+$ cd phronetic
+======================================
+
+
+======================================
+2) Add Gems
+PATH: Gemfile
+======================================
+
+# Use hirb for rails c table view.  Then in rails c:
+gem 'hirb'
+# require 'hirb'
+# Hirb.enable
+
+gem 'pry'
+
+---------
+$ be bundle install
+
+======================================
+
+
+======================================
+3) APPLICATION CONFIG
+PATH: config/application.rb
+======================================
+
+config.autoload_paths << File.join(config.root, "lib")
+config.autoload_paths += %W(#{config.root}/controllers/concerns)
+# config.autoload_paths += %W(#{config.root}/lib/servicers)
+config.autoload_paths << Rails.root.join('lib/servicers')
+config.autoload_paths += Dir["#{config.root}/lib/servicers"]
+
+
+======================================
+4) CREATE MODULE
+PATH: app/controllers/concerns/act_parser.rb
+======================================
+
+module ActParser
+  extend ActiveSupport::Concern
+
+  def welcome
+    puts "Welcome to the ActParser!"
+  end
+
+end
+======================================
+
+
+======================================
+5) CREATE SERVICER CLASS
+PATH: lib/servicers/act_saver.rb
+======================================
+
+## Call: ActSaver.new.start_act_saver
+## Description: ........
+
+class ActSaver
+  include ActParser
+
+  def initialize
+    puts "\n\n== Welcome to the ActSaver Class! ==\n\n"
+  end
+
+  def start_act_saver
+    welcome #=> via ActParser
+    sampler
+  end
+
+
+  def sampler
+    puts "In the sampler!"
+  end
+
+
+end
+======================================
+
+
+
+<><>><><><><> A. SCAFFOLD! <><>><><><><>
+
+
+
+======================================
+6) SCAFFOLD
+======================================
+Act----
+  $ rails g scaffold Act act_num src act_name sts
+    t.index :act_num, unique: true
+
+  $ rails g scaffold Acting
+    t.references :act, index: true
+    t.references :actable, polymorphic: true, index: true
+
+    (after 1st end)>>
+    add_index :actings, [:acting_id, :actable_type, :actable_id], unique: true, name: 'actings_index' #=> And in Model!
+
+Cont----
+  $ rails g scaffold Cont cont_num src sts full_name first_name last_name email job_title
+    t.index :cont_num, unique: true
+
+    (after 1st end)>>
+    add_index :conts, [:full_name, :email, :job_title], unique: true, name: 'cont_index' #=> And in Model!
+
+Adr----
+  $ rails g scaffold Adr sts street city state zip full pin
+    t.index :full, unique: true
+
+  $ rails g scaffold Adring
+    t.references :adr, index: true
+    t.references :adrable, polymorphic: true, index: true
+
+    (after 1st end)>>
+    add_index :adrings, [:adring_id, :adrable_type, :adrable_id], unique: true, name: 'adrings_index' #=> And in Model!
+
+Phone----
+  $ rails g scaffold Phone sts phone
+    t.index :phone, unique: true
+
+  $ rails g scaffold Phoning
+    t.references :phone, index: true
+    t.references :phonable, polymorphic: true, index: true
+
+    (after 1st end)>>
+    add_index :phonings, [:phone_id, :phonable_type, :phonable_id], unique: true, name: 'phonings_index' #=> And in Model!  #=> And in Model!
+
+Url----
+  $ rails g scaffold Url sts url
+    t.index :url, unique: true
+
+  $ rails g scaffold Urling
+    t.references :url, index: true
+    t.references :urlable, polymorphic: true, index: true
+
+    (after 1st end)>>
+    add_index :urlings, [:url_id, :urlable_type, :urlable_id], unique: true, name: 'urlings_index' #=> And in Model!  #=> And in Model!
+
+======================================
+7) MODEL CLASSES
+======================================
+
+Act
+  -Act
+    validates :act_num, uniqueness: true
+    has_many :actings
+
+    # has_many :cont_nums, through: :actings, src: :actable, src_type: :Cont
+    has_many :conts, through: :actings, src: :actable, src_type: :Cont
+      #######################
+
+    has_one :adring, as: :adrable
+    has_one :adr, through: :adring
+
+    has_many :phonings, as: :phonable
+    has_many :phones, through: :phonings
+
+    has_one :urling, as: :urlable
+    has_one :url, through: :urling
+
+  -Acting
+    belongs_to :actable, polymorphic: true
+    belongs_to :act
+
+    validates :act_id, :uniqueness => { :scope => [:actable_type, :actable_id] } #=> ALSO IN MIGRATION!
+
+Cont
+  -Cont
+    validates :cont_num, uniqueness: true
+
+    * validates :full_name, :uniqueness => { :scope => [:email, :job_title] } #=> ALSO IN MIGRATION!
+
+    has_many :contings
+
+    has_many :phonings, as: :phonable
+    has_many :phones, through: :phonings
+
+    has_one :acting, as: :actable
+    has_one :act, through: :acting
+
+Adr
+  -Adr
+    validates :full, uniqueness: true
+
+    has_many :adrings
+    has_many :act_nums, through: :adrings, src: :adrable, src_type: :Act
+
+  -Adring
+    belongs_to :adrable, polymorphic: true
+    belongs_to :adr
+
+    validates :adr_id, :uniqueness => { :scope => [:adrable_type, :adrable_id] } #=> ALSO IN MIGRATION!
+
+Phone
+  -Phone
+    validates :phone, uniqueness: true
+    has_many :phonings
+    has_many :act_nums, through: :phonings, src: :phonable, src_type: :Act
+
+  -Phoning
+    belongs_to :phonable, polymorphic: true
+    belongs_to :phone
+
+    validates :phone_id, :uniqueness => { :scope => [:phonable_type, :phonable_id] } #=> ALSO IN MIGRATION!
+
+Url
+  -Url
+    validates :url, uniqueness: true
+    has_many :urlings
+
+    has_many :act_nums, through: :urlings, src: :urlable, src_type: :Act
+
+  -Urling
+    belongs_to :urlable, polymorphic: true
+    belongs_to :url
+
+    validates :url_id, :uniqueness => { :scope => [:urlable_type, :urlable_id] } #=> ALSO IN MIGRATION!
+
+
+
+
+
+>>>>  ################## Add Data ##################
+
+>>>> Add acts
+act_num_raw = 'ac_100'
+act_name_raw = 'Act 100'
+phone_raw = '100-100-1000'
+url_raw = 'http://www.100.com'
+full_raw = '100 Main St, Austin, TX, 78735'
+-------------------------------
+act_num_raw = 'ac_200'
+act_name_raw = 'Act 200'
+phone_raw = '200-200-2000'
+url_raw = 'http://www.200.com'
+full_raw = '200 Main St, Austin, TX, 78735'
+-------------------------------
+act_num_raw = 'ac_300'
+act_name_raw = 'Act 300'
+phone_raw = '300-300-3000'
+url_raw = 'http://www.300.com'
+full_raw = '300 Main St, Austin, TX, 78735'
+-------------------------------
+act_num = Act.find_or_create_by(act_num: act_num_raw, act_name: act_name_raw)
+act_num.phones << Phone.find_or_create_by(phone: phone_raw)
+act_num.url = Url.find_or_create_by(url: url_raw)
+act_num.adr = Adr.find_or_create_by(full: full_raw)
+
+act_num = Act.find_by(act_num: 'ac_100')
+
+==View Data
+Act.all
+Acting.all
+
+Phone.all
+Phoning.all
+
+Url.all
+Urling.all
+
+Adr.all
+Adring.all
+
+---------------
+
+>>>> Add Conts
+-------------------------------
+act_num = Act.find_by(act_num: 'ac_100')
+cont_num_raw = 'con_100'
+full_name_raw = 'Cont 100'
+email_raw = '100@cont.com'
+job_title_raw = 'Job 100'
+phone_raw = '100-100-1000'
+-------------------------------
+act_num = Act.find_by(act_num: 'ac_200')
+cont_num_raw = 'con_200'
+full_name_raw = 'Cont 200'
+email_raw = '200@cont.com'
+job_title_raw = 'Job 200'
+phone_raw = '200-200-2000'
+-------------------------------
+act_num = Act.find_by(act_num: 'ac_300')
+cont_num_raw = 'con_300'
+full_name_raw = 'Cont 300'
+email_raw = '300@cont.com'
+job_title_raw = 'Job 300'
+phone_raw = '300-300-3000'
+-------------------------------
+act_num = Act.find_by(act_num: 'ac_100')
+cont_num_raw = 'con_101'
+full_name_raw = 'Cont 101'
+email_raw = '101@cont.com'
+job_title_raw = 'Job 101'
+phone_raw = '100-101-1010'
+-------------------------------
+act_num = Act.find_by(act_num: 'ac_200')
+cont_num_raw = 'con_202'
+full_name_raw = 'Cont 202'
+email_raw = '202@cont.com'
+job_title_raw = 'Job 202'
+phone_raw = '202-202-2020'
+-------------------------------
+act_num = Act.find_by(act_num: 'ac_300')
+cont_num_raw = 'con_303'
+full_name_raw = 'Cont 303'
+email_raw = '303@cont.com'
+job_title_raw = 'Job 303'
+phone_raw = '303-303-3030'
+
+cont_num = Cont.find_or_create_by(cont_num: cont_num_raw)
+cont_num.update(full_name: full_name_raw, email: email_raw, job_title: job_title_raw)
+
+cont = Cont.find_or_create_by(full_name: full_name_raw, email: email_raw, job_title: job_title_raw)
+cont.phones << Phone.find_or_create_by(phone: phone_raw)
+cont.act = act_num
+
+
+cont_num = Cont.find_or_create_by(cont_num: cont_num_raw, full_name: full_name_raw, email: email_raw, job_title: job_title_raw)
+cont_num.phones << Phone.find_or_create_by(phone: phone_raw)
+cont_num.act = act_num
+
+----
+cont_num = Cont.find_by(cont_num: 'con_100')
+cont_num.act
+act_num = Act.find_by(act_num: 'ac_100')
+----
+
+
+
+$$$$$$ Special Query Starts $$$$$$
+
+act_name_raw = 'Act 300'
+phone_raw = '300-300-3000'
+url_raw = 'http://www.300.com'
+full_raw = '300 Main St, Austin, TX, 78735'
+
+act = Act.find_or_create_by(act_name: act_name_raw)
+act.phones << Phone.find_or_create_by(phone: phone_raw)
+act.url = Url.find_or_create_by(url: url_raw)
+act.adr = Adr.find_or_create_by(full: full_raw)
+
+act = Act.find_by(act_num: 'ac_100')
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Y conts = Cont.includes(:act).all
+Y conts.first.act.id
+Y Cont.includes(:act).where(acts: {id: 1}).first
+
+Y Cont.includes(:act).where(acts: {id: 1}, conts: {id: 1}).first
+Y Cont.includes(:act).where(acts: {id: 1}).where(conts: {id: 1}).first
+
+Y Cont.includes(:act).where(acts: {id: 1}, conts: {full_name: 'Cont 100'}).first
+Y Cont.includes(:act).where(acts: {id: 1}).where(conts: {full_name: 'Cont 100'}).first
+===============
+
+Y Cont.find_by(full_name: 'Cont 100')
+Y Cont.includes(:act).find_by(full_name: 'Cont 100')
+Y Cont.includes(:act).find_by(acts: {id: 1})
+
+Y Cont.includes(:act).find_by(acts: {id: 2}, conts: {full_name: 'Cont 300'})
+
+
+
+
+
+>> IMPORTANT - HOW ????<<
+conts = Act.find(1).conts
+conts.find_or_create_by(full_name: 'why?')
+>> IMPORTANT <<
+
+conts = Act.find(1).conts
+
+
+
+
+why_not? = Cont.includes(:act).find_or_create_by(act: {id: 2}, cont: {full_name: 'Cont 300'})
+
+but_this_does = Act.includes(:conts).find_or_create_by(acts: {id: 1}, cont: {full_name: 'Cont 300'})
+
+
+
+
+
+~~~~~~~~~~~~~~~~~~~~~
+act_num = Act.find_by(act_num: 'ac_300')
+cont_num_raw = 'con_303'
+full_name_raw = 'Cont 303'
+email_raw = '303@cont.com'
+job_title_raw = 'Job 303'
+phone_raw = '303-303-3030'
+
+
+~~~~~~~~~~~~~~~~~~~~~~
+
+
+===============
+########### Eager Loading ###########
+
+Post.includes(:author, { comments: { author: :gravatar } }).each do |post|
+
+act_num_id = 'ac_100'
+act_name = 'Act 100'
+act_num = ActNum.find_or_create_by(act_num: act_num_id)
+
+act_num = ActNum.includes(:act_name, :url, :phones, :adr).where(act_num: 'ac_100')
+act_num = ActNum.includes(:act_numable)
+Adr.includes(:adring)
+ActName.includes(:act_namings)
+Act.includes(:idnums, :phones).where(idnums: {crm_id: 'ac_100'}).where(phones: {phone: '(123) 456-7890'})
+##############################
+
+
+
+======
+
+act_id = cont.act.id #=> 1
+Cont.where
+
+cont = Cont.find_or_create_by(full_name: full_name_raw, email: email_raw, job_title: job_title_raw)
+
+cont = Cont.find_by(full_name: 'Cont 100')
+cont = Cont.find_by(act.id: 1)
+
+
+$$$$$$ Special Query Ends $$$$$$
+
+
+
+
+
+
+++++++++++ CRAZY BEGINS ++++++++++
+rails c
+Hirb.enable
+
+-----
+act = Act.all.first
+act.cont_nums
+
+cont = Cont.all.first
+cont.act
+
+
+----- crazy...
+act_num_raw = 'ac_100'
+act_name_raw = 'Act 100'
+url_raw = 'http://www.100.com'
+full_raw = '100 Main St, Austin, TX, 78735'
+
+act_num = Act.find_or_create_by(act_num: act_num_raw, act_name: act_name_raw)
+act_num.url = Url.find_or_create_by(url: url_raw)
+act_num.adr = Adr.find_or_create_by(full: full_raw)
+
+cont_num_raw = 'con_100'
+full_name_raw = 'Cont 100'
+phone_raw = '100-100-1000'
+
+cont_num = Cont.find_or_create_by(cont_num: cont_num_raw, full_name: full_name_raw)
+cont_num.phones << Phone.find_or_create_by(phone: phone_raw)
+
+
+act_num.adr
+act_num.cont_nums << cont_num
+act_num.cont_nums |>> no such column: actings.act_id
+
+------ still crazy...
+
+cont_num.phones
+cont_num.act = act_num
+cont_num.act |>> no such column: actings.act_id
+
+
++++++++++++ CRAZY ENDS +++++++++++
+
+
+
+==View Data
+Act.all
+Acting.all
+
+Phone.all
+Phoning.all
+
+
+
+
+
+
+
+
+
+
+
+<><>><><><><> B. SAMPLE DATA! <><>><><><><>
+
+
+======================================
+4a) Add Act Data (VIA RAILS CONSOLE)
+======================================
+
+$ rails c
+
+# require 'hirb'
+# Hirb.enable
+
+========== Add Acts:
+
+act_num_id = 'ac_100'
+act_name = 'Act 100'
+phone = '100-100-1000'
+url = 'http://www.100.com'
+full = '100 Main St, Austin, TX, 10010'
+
+act_num_id = 'ac_200'
+act_name = 'Act 200'
+phone = '200-200-2000'
+url = 'http://www.200.com'
+full = '200 Main St, Austin, TX, 20020'
+
+act_num_id = 'ac_300'
+act_name = 'Act 300'
+phone = '300-300-3000'
+url = 'http://www.300.com'
+full = '300 Main St, Austin, TX, 30030'
+
+act_num_id = 'ac_400'
+act_name = 'Act 400'
+phone = '400-400-4000'
+url = 'http://www.400.com'
+full = '400 Main St, Austin, TX, 40040'
+
+act_num = ActNum.find_or_create_by(act_num: act_num_id)
+act_num.act_name = ActName.find_or_create_by(act_name: act_name)
+act_num.phones << Phone.find_or_create_by(phone: phone)
+act_num.url = Url.find_or_create_by(url: url)
+act_num.adr = Adr.find_or_create_by(full: full)
+
+################
+\\\\\\\\\\\\\\\
+
+ActNum.all.first.act_name
+ActNum.all.first.cont_nums
+
+ContNum.all.first.cont_name
+ContNum.all.first.act_num
+ContNum.all.first.act_numing
+
+cont_num_id = 'cont_100'
+full_name = 'Cont Full Name 100'
+phone = '100-100-1000'
+
+cont_num = ContNum.find_or_create_by(cont_num: cont_num_id)
+cont_num.cont_name = ContName.find_or_create_by(full_name: full_name)
+cont_num.phones << Phone.find_or_create_by(phone: phone)
+
+# cont_num.act_num = ActNum.find_by(act_num: 'ac_100')
+cont_num.act_numing
+
+\\\\\\\\\\\\\\
+
+act_num_id = 'ac_100'
+act_num_assoc = ActNum.find_or_create_by(act_num: act_num_id)
+
+full_name = 'Adam 100'
+cont_name = ContName.find_or_create_by(full_name: full_name)
+
+cont_num_id = 'cont_100'
+cont_name.cont_num <<
+cont_num = cont_name.find_or_create_by(full_name: full_name)
+
+
+cont_num = cont_name.cont_nums.all
+cont_name.act_num << act_num_assoc
+
+act_num.act_numings
+act_num.cont_numings
+
+
+
+
+
+act_num.phones << Phone.find_or_create_by(phone: phone)
+act_num.act_numings
+act_num.cont_numings
+
+act_sfdc_id = ActNum.find_by(act_num: 'ac_100')
+
+cont_num = ContNum.find_or_create_by(cont_num: cont_num_id)
+cont_num.cont_name = ContName.find_or_create_by(full_name: full_name)
+cont_num.phones << Phone.find_or_create_by(phone: phone)
+cont_num.act_numing
+
+################
+
+################
+# has_one :act_numing, as: :cont_numable
+# has_one :act_num, through: :act_numings
+################
+
+cont_num_id = 'cont_100'
+full_name = 'Cont Full Name 800'
+phone = '800-100-1000'
+
+cont_num_id = 'cont_200'
+full_name = 'Cont Full Name 200'
+phone = '200-200-2000'
+
+cont_num_id = 'cont_300'
+full_name = 'Cont Full Name 300'
+phone = '300-300-3000'
+
+cont_num_id = 'cont_400'
+full_name = 'Cont Full Name 400'
+phone = '400-400-4000'
+
+
+cont_num = ContNum.find_or_create_by(cont_num: cont_num_id)
+cont_num.cont_name = ContName.find_or_create_by(full_name: full_name)
+cont_num.phones << Phone.find_or_create_by(phone: phone)
+################
+
+
+
+########### Testing Creating New Data ###########
+http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html
+
+act_num_id = 'ac_100'
+act_name = 'Act 100'
+
+act_num = ActNum.find_or_create_by(act_num: act_num_id)
+user.profiles.build(name: "Master of Lorem Ipsum").save
+
+act_num.act_name.build(act_name: act_name).save
+act_num.act_name.act_name
+
+
+##############################
+
+user = User.first
+user.build_profile(name: "Master of Lorem Ipsum").save
+user.profile.name
+# => "Master of Lorem Ipsum"
+
+business = Business.first
+business.build_profile(name: "Taco Shell").save
+business.profile.name
+# => "Taco Shell"
+
+
+
+
+########### Eager Loading ###########
+
+act_num_id = 'ac_100'
+act_name = 'Act 100'
+act_num = ActNum.find_or_create_by(act_num: act_num_id)
+
+Post.includes(:author, { comments: { author: :gravatar } }).each do |post|
+
+
+##############################
+
+act_num = ActNum.includes(:act_name, :url, :phones, :adr).where(act_num: 'ac_100')
+
+puts act_num.act_num
+puts act_name.act_name
+puts url.url
+puts phones.phone.first
+puts adr.full
+
+#################
+
+act_num = ActNum.includes(:act_numable)
+
+Adr.includes(:adring)
+
+ActName.includes(:act_namings)
+
+Act.includes(:idnums, :phones).where(idnums: {crm_id: 'ac_100'}).where(phones: {phone: '(123) 456-7890'})
+
+======================================
+
+======================================
+5) View Data
+======================================
+ContNum.all
+ContName.all
+ContNaming.all
+
+
+ActNum.all
+ActName.all
+ActNaming.all
+
+Adr.all
+Adring.all
+
+Phone.all
+Phoning.all
+
+Url.all
+Urling.all
+###############
+act_num = ActNum.find_or_create_by(act_num: act_num_id)
+act_num.act_name
+act_num.phones
+act_num.url
+act_num.adr
+
+act_num.act_name.act_name
+act_num.phones.first.phone
+act_num.url.url
+act_num.adr.full
+======================================
+
+
+
+======================================
+9) (Old - Reference) SERVICER CLASS
+PATH: lib/servicers/act_saver.rb
+======================================
+
+
+## Call: ActSaver.new.start_act_saver
+## Description: ........
+
+class ActSaver
+  # include ActParser
+
+  def initialize
+    puts "\n\n== Welcome to the ActSaver Class! ==\n\n"
+  end
+
+
+  def start_act_saver
+    # welcome
+    # query_act_hashes
+    sampler
+  end
+
+
+  #######################################
+
+  def sampler
+    puts "In the sampler!"
+
+    act_num_id = 'ac_100'
+    act_num_id = 'ac_200'
+    act_num_id = 'ac_300'
+    act_num_id = 'ac_400'
+    act_num_id = 'ac_500'
+
+    act_name = 'Act 100'
+    act_name = 'Act 200'
+    act_name = 'Act 300'
+    act_name = 'Act 400'
+    act_name = 'Act 500'
+
+    phone = '888-888-8888'
+    phone = '777-777-7777'
+    phone = '555-555-5555'
+    phone = '444-444-4444'
+    phone = '333-333-3333'
+
+    act_num = ActNum.find_or_create_by(act_num: act_num_id)
+    act_num.act_name = ActName.find_or_create_by(act_name: act_name)
+    # act_num.act_names << ActName.find_or_create_by(act_name: act_name)
+    act_num.phones << Phone.find_or_create_by(phone: phone)
+
+  end
+
+  #######################################
+
+
+  def query_act_hashes
+    puts "Querying Act Hash, then Saving to DB..."
+    # raw_act_hashes = []
+    # act_hsh = {crm_id: 'HERE', crm_id_category: 'HERE', crm_id_src: 'HERE', act_sts: 'HERE', act_src: 'HERE', url: 'HERE', url_sts: 'HERE', org_name: 'HERE', street: 'HERE', city: 'HERE', zip: 'HERE', state: 'HERE', full_adr: 'HERE', pin: 'HERE', phone: 'HERE'}
+
+    act_hsh = {crm_id: 'ac_100', crm_id_category: 'act', crm_id_src: 'crm', act_sts: 'imported', act_src: 'crm', url: 'http://www.sample123.com', url_sts: 'Valid', org_name: 'Happy Cars 123', street: '123 Main St.', city: 'Happytown', state: 'AZ', zip: '12345', full_adr: '123 Main St., Happytown, AZ, 12345', pin: 's123-z12345', phone: '(123) 456-7890'}
+
+    parse_act_hsh(act_hsh)
+  end
+
+  def parse_act_hsh(act_hsh)
+    puts "Parsing Act Hash, then Saving to DB..."
+
+    @crm_data = nil
+    @act_data = nil
+    @url_data = nil
+    @org_data = nil
+    @adr_data = nil
+    @phone_data = nil
+
+    @crm_data = { crm_id: act_hsh[:crm_id], category: act_hsh[:crm_id_category], src: act_hsh[:crm_id_src] }
+    @act_data = { sts: act_hsh[:act_sts], src: act_hsh[:act_src] }
+    @url_data = { url: act_hsh[:url], sts: act_hsh[:url_sts] }
+    @org_data = { name: act_hsh[:org_name] }
+    @adr_data = { street: act_hsh[:street], city: act_hsh[:city], zip: act_hsh[:zip], state: act_hsh[:state], full_adr: act_hsh[:full_adr], pin: act_hsh[:pin] }
+    @phone_data = { phone: act_hsh[:phone] }
+
+    save_or_update_db
+  end
+
+  ################################
+
+  this_con = ContNum.all.first
+  ContNum.includes(:idnums).where(idnums: {crm_id: 'ac_100'})
+
+
+
+  ################################
+
+  def save_or_update_db
+    # Act.where(whatever: "condition").includes(:idnums)
+    # Act.all.includes(:idnums).map(&:idnums)
+    # Act.includes(:idnums).map(&:idnums)
+    # Act.includes(:idnums).where(idnums: {crm_id: 'ac_100'})
+    # Act.includes(:idnums, :phones).where(idnums: {crm_id: 'ac_100'}).where(phones: {phone: '(123) 456-7890'})
+    # crm_id_sts = Crm.find_by(crm_id: @crm_data[:crm_id]).present?
+
+    # Act.includes(:idnums).where(idnums: {crm_id: 'ac_100'})
+    # Crm.find_by(crm_id: 'ac_100')
+    #
+    # Act.includes(:idnums).where(idnums: {crm_id: 'ac_100'})
+    #
+    # User.create_with(last_name: 'Johansson').find_or_create_by(first_name: 'Scarlett')
+    #
+    # Crm.find_by(crm_id: 'ac_100')
+    #
+    # , act_sts: 'imported', act_src: 'crm'
+    #
+    # Act.find_or_create_by(sts: 'imported', src: 'crm')
+    #
+    # .includes(:idnums).find_or_create_by(idnums: {crm_id: 'ac_100', crm_id_category: 'act', crm_id_src: 'crm'})
+
+
+
+
+
+    # # crm_id_sts = Crm.find_by(crm_id: 'ac_100').present?
+    # crm_id_sts = Crm.find_by(crm_id: @crm_data[:crm_id]).present?
+    #
+    # if crm_id_sts == false
+    #   puts "Act CRM ID: Unique - Saving to DB!"
+    #   act = Act.create(@act_data)
+    #   act.idnums << Crm.create(@crm_data)
+    #
+    #   act.orgs << Org.find_or_create_by(@org_data)
+    #   act.urls << Url.find_or_create_by(@url_data)
+    #   act.phones << Phone.find_or_create_by(@phone_data)
+    #   act.adrs << Adr.find_or_create_by(@adr_data)
+    # else
+    #   puts "Act CRM ID: Duplicate - Rollback"
+    # end
+
+
+    # crm_id_sts = Crm.find_by(crm_id: 'ac_100').present?
+    crm_id_sts = Crm.find_by(crm_id: @crm_data[:crm_id]).present?
+
+    if crm_id_sts == false
+      puts "Act CRM ID: Unique - Saving to DB!"
+      act = Act.create(@act_data)
+      act.idnums << Crm.create(@crm_data)
+
+      act.orgs << Org.find_or_create_by(@org_data)
+      act.urls << Url.find_or_create_by(@url_data)
+      act.phones << Phone.find_or_create_by(@phone_data)
+      act.adrs << Adr.find_or_create_by(@adr_data)
+    else
+      puts "Act CRM ID: Duplicate - Rollback"
+    end
+
+  end
+
+
+end

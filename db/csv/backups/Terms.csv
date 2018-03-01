@@ -1,0 +1,193 @@
+id,category,sub_category,criteria_term,response_term,mth_name,created_at,updated_at
+24,find_page,loc_text,general,locations,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+25,find_page,loc_text,general,map & location,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+26,find_page,loc_text,general,our locations,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+27,find_page,loc_text,general,store locations,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+47,find_page,staff_text,general,departments,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+48,find_page,staff_text,general,management,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+59,find_page,staff_text,general,staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+61,find_page,staff_text,general,team,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+62,find_page,loc_href,general,dealerlocations,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+63,find_page,loc_href,general,locations,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+64,find_page,loc_href,general,locations-and-directions,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+65,find_page,loc_href,general,locations-ca-az-nv,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+66,find_page,loc_href,general,maplocation,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+68,find_page,loc_href,general,our-stores,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+69,find_page,loc_href,general,store-locations,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+71,find_page,loc_text,general,dealer locations,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+73,find_page,loc_text,general,automotive locations,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+74,find_page,loc_text,general,hours locations and directions,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+76,find_page,loc_href,general,dealer-locations,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+80,find_page,loc_text,general,service center locations,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+82,staffer,job_titles,Vice President,Vice President,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+3,find_page,staff_text,Dealer Inspire,staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+5,find_page,staff_text,Cobalt,staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+7,find_page,staff_text,DealerFire,meetthestaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+8,find_page,staff_text,DealerFire,ourteam,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+9,find_page,staff_text,Cobalt,meetourstaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+10,find_page,staff_text,Cobalt,meetthestaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+18,find_page,staff_text,Dealer Inspire,meetourteam,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+19,find_page,staff_text,Dealer Inspire,ourteam,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+23,find_page,staff_text,general,ourpeople,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+41,find_page,staff_text,general,theporscheteam,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+46,find_page,staff_text,general,corporateteam,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+49,find_page,staff_text,general,meetourmanagers,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+50,find_page,staff_text,general,meetoursalesstaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+51,find_page,staff_text,general,meetoursalesteam,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+52,find_page,staff_text,general,meetourstaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+53,find_page,staff_text,general,meetourteam,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+54,find_page,staff_text,general,meetourteams,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+55,find_page,staff_text,general,meetthestaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+56,find_page,staff_text,general,ourstaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+57,find_page,staff_text,general,ourteam,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+58,find_page,staff_text,general,salesstaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+60,find_page,staff_text,general,staffdirectory,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+70,find_page,staff_text,DealerFire,staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+72,find_page,staff_text,DealerFire,meetthestaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+77,find_page,staff_text,general,meetourteam,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+2,find_page,staff_href,Dealer Inspire,/about-us/staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+4,find_page,staff_href,general,/corporate-team,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+6,find_page,staff_href,Cobalt,/ourstaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+11,find_page,staff_href,Cobalt,/meetourdepartments,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+12,find_page,staff_href,Cobalt,/meetourstaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+13,find_page,staff_href,Cobalt,/meet-our-staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+14,find_page,staff_href,Cobalt,/staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+15,find_page,staff_href,Dealer Inspire,/team,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+16,find_page,staff_href,Dealer Inspire,/staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+20,find_page,staff_href,DealerOn,/staff.aspx,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+21,find_page,staff_href,Dealer.com,/staff.aspx,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+22,find_page,staff_href,DEALER eProcess,/meet-our-staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+28,find_page,staff_href,general,/all-staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+30,find_page,staff_href,Cobalt,/ourteam,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+31,find_page,staff_href,general,/dealership-contacts,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+32,find_page,staff_href,general,/meet-our-staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+33,find_page,staff_href,general,/meet-our-team,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+34,find_page,staff_href,general,/meet-the-staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+35,find_page,staff_href,general,/meet_our_staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+36,find_page,staff_href,general,/meetourdepartments,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+37,find_page,staff_href,general,/meetourstaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+38,find_page,staff_href,general,/meetthestaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+39,find_page,staff_href,general,/ourstaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+40,find_page,staff_href,general,/sales-staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+42,find_page,staff_href,general,/staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+43,find_page,staff_href,general,/staff-sales,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+44,find_page,staff_href,general,/staff?,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+45,find_page,staff_href,general,/team,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+67,find_page,staff_href,general,/salesteam,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+75,find_page,staff_href,Dealer Inspire,/dealership/staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+78,find_page,staff_href,general,/staff_page,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+79,find_page,staff_href,general,/meet_the_staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+81,find_page,staff_href,Dealer Inspire,/about-us/meet-our-staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+83,staffer,job_titles,Area Regional Manager,Area Regional Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+84,staffer,job_titles,CTO,CTO,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+85,staffer,job_titles,Business Development Rep,Business Development Rep,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+86,staffer,job_titles,Director of Alliances,Director of Alliances,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+87,staffer,job_titles,Buyer,Buyer,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+88,staffer,job_titles,Data Management,Data Management,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+89,staffer,job_titles,CEO,CEO,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+90,staffer,job_titles,CFO,CFO,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+91,staffer,job_titles,Dealer Principal,Dealer Principal,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+92,staffer,job_titles,Chairman,Chairman,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+93,staffer,job_titles,District Mgr,District Mgr,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+94,staffer,job_titles,Desk Manager,Desk Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+95,staffer,job_titles,Digital Marketing Manager,Digital Marketing Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+96,staffer,job_titles,Digital Marketing Rep,Digital Marketing Rep,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+97,staffer,job_titles,Managing Partner,Managing Partner,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+98,staffer,job_titles,Divisional Development Exec,Divisional Development Exec,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+99,staffer,job_titles,Regional Operations Director,Regional Operations Director,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+100,staffer,job_titles,DMS Administrator,DMS Administrator,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+101,staffer,job_titles,Marketing Director,Marketing Director,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+102,staffer,job_titles,Ecommerce Director,Ecommerce Director,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+103,staffer,job_titles,Executive Manager,Executive Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+104,staffer,job_titles,Marketing Manager,Marketing Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+105,staffer,job_titles,F&I Manager,F&I Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+106,staffer,job_titles,Resource,Resource,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+107,staffer,job_titles,First Look Internal Rep,First Look Internal Rep,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+108,staffer,job_titles,New Car Manager,New Car Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+109,staffer,job_titles,Fixed Operations Manager,Fixed Operations Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+110,staffer,job_titles,General Manager,General Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+111,staffer,job_titles,Office Manager,Office Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+112,staffer,job_titles,General Sales Manager,General Sales Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+113,staffer,job_titles,Retail Operations Manager,Retail Operations Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+114,staffer,job_titles,Group Owner,Group Owner,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+115,staffer,job_titles,Other,Other,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+116,staffer,job_titles,Internet Director,Internet Director,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+117,staffer,job_titles,Internet Manager,Internet Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+118,staffer,job_titles,Owner,Owner,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+119,staffer,job_titles,IT,IT,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+120,staffer,job_titles,Sales Manager,Sales Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+121,staffer,job_titles,Photo Person/Photo Loader,Photo Person/Photo Loader,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+122,staffer,job_titles,Salesperson,Salesperson,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+123,staffer,job_titles,Platform/Regional Manager,Platform/Regional Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+124,staffer,job_titles,President,President,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+125,staffer,job_titles,Territory Sales Manager,Territory Sales Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+126,staffer,job_titles,Program Manager,Program Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+127,staffer,job_titles,Purchasing Manager,Purchasing Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+128,staffer,job_titles,Used Car Director,Used Car Director,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+129,staffer,job_titles,Regional Development Exec,Regional Development Exec,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+130,staffer,job_titles,Used Car Manager,Used Car Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+131,staffer,job_titles,Variable Operations Director,Variable Operations Director,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+132,staffer,job_titles,Area VP,Area VP,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+133,staffer,job_titles,Controller,Controller,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+134,staffer,job_titles,Asst. Treasurer,Asst. Treasurer,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+135,staffer,job_titles,Account Director,Account Director,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+136,staffer,job_titles,Director,Director,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+137,staffer,job_titles,Account Executive,Account Executive,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+138,staffer,job_titles,Attorney,Attorney,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+139,staffer,job_titles,Accounts Payable,Accounts Payable,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+140,staffer,job_titles,COO,COO,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+141,staffer,job_titles,Administrative,Administrative,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+142,staffer,job_titles,Business Development Manager,Business Development Manager,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+143,staffer,job_titles,AR/Billing,AR/Billing,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+144,find_temp,at_css,searchoptics,Search Optics,search_optics_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+145,find_temp,at_css,Dealer Direct,Dealer Direct,dealer_direct_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+146,find_temp,at_css,forddirect,Dealer Direct,dealer_direct_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+147,find_temp,at_css,dealereprocess,DEALER eProcess,dealer_eprocess_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+148,find_temp,at_css,autojini,AutoJini,autojini_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+149,find_temp,at_css,dealersocket,Dealer Socket,dealer_socket_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+150,find_temp,at_css,Dealer Spike,Dealer Spike,dealer_spike_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+151,find_temp,at_css,DealerFire,DealerFire,dealerfire_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+152,find_temp,at_css,dealeron,DealerOn,dealeron_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+153,find_temp,at_css,DealerPeak,DealerPeak,dealerpeak_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+154,find_temp,at_css,dealertrend,DealerTrend,dealertrend_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+155,find_temp,at_css,Dominion Dealer Solutions,Dominion,dominion_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+156,find_temp,at_css,drivewebsite.com,Drive Website,drive_website_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+157,find_temp,at_css,drivingforceauto,Driving Force,driving_force_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+158,find_temp,at_css,DForce Web,Driving Force,driving_force_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+159,find_temp,at_css,cobalt,Cobalt,cobalt_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+160,find_temp,at_css,chapman,Chapman.co,chapman_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+161,find_temp,at_css,Autofusion,Autofusion,autofusion_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+162,find_temp,at_css,Dealer Car Search,DealerCar Search,dealercar_search_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+163,find_temp,at_css,I/O COM,I/O COM,io_com_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+164,find_temp,at_css,DLD Websites,DLD Websites,dld_websites_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+165,find_temp,at_css,autofunds.com,Autofunds,autofunds_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+166,find_temp,at_css,ebizautos.com,eBizAutos,ebizautos_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+167,find_temp,at_css,foxdealer,FoxDealer,foxdealer_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+168,find_temp,at_css,fusionZONE,fusionZONE,fusionzone_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+169,find_temp,at_css,fzautomotive,fusionZone,fusionzone_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+170,find_temp,at_css,jazel,Jazel Auto,jazel_auto_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+171,find_temp,at_css,motionfuze,Motion Fuze,motion_fuze_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+172,find_temp,at_css,motorwebs,Motorwebs,motorwebs_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+173,find_temp,at_css,di_homepage,Dealer Inspire,dealer_inspire_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+174,find_temp,at_css,DDC,Dealer.com,dealer_com_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+175,find_temp,at_css,serpcom,SERPCOM,serpcom_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+176,find_temp,at_css,slipstream,Slip Stream,slip_stream_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+177,find_temp,at_css,pixelmotion,Pixel Motion,pixel_motion_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+178,find_temp,at_css,remorainc,Remora,remora_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+179,find_temp,at_css,VinSolutions,VinSolutions,vinsolutions_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+180,find_temp,at_css,All Auto Network,All Auto Network,all_auto_network_rts,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+181,url_redirect,error_msg,404 => Net::HTTPNotFound,404 Error,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+182,url_redirect,error_msg,400 => Net::HTTPBadRequest,400 Error,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+183,url_redirect,error_msg,500 => Net::HTTPInternalServerError,500 Error,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+184,url_redirect,error_msg,504 => Net::HTTPGatewayTimeOut,504 Error,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+185,url_redirect,error_msg,nil:NilClass,Nil Error,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+186,url_redirect,error_msg,TCP connection,TCP Error,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+187,url_redirect,error_msg,undefined method,Method Error,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+188,url_redirect,error_msg,SSL_connect returned,SSL Error,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+189,url_redirect,error_msg,503 => Net::HTTPServiceUnavailable,503 Error,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+190,url_redirect,error_msg,403 => Net::HTTPForbidden,403 Error,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+191,url_redirect,error_msg,Errno::ECONNRESET,Reset Error,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+192,url_redirect,error_msg,410 => Net::HTTPGone,410 Error,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+1,find_page,staff_text,Cobalt,meetourteam,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+17,find_page,staff_text,Dealer Inspire,meetourstaff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC
+29,find_page,staff_href,general,/buick_and_gmc_staff,,2018-01-10 04:37:00 UTC,2018-02-27 04:00:06 UTC

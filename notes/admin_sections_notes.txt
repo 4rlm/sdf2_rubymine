@@ -1,0 +1,70 @@
+Admin Sections:
+
+### This can be removed.  Not doing 'power buttons anymore.' ###
+1. Power Starter: /admin/_starters_power.html.erb
+  core_power_btn_path
+  staffer_power_btn_path
+  indexer_power_btn_path
+
+
+### Need to relink these, because class names and locations changed. ###
+2. Scraper Starter: /admin/_starters_scraper.html.erb
+  url_redirect_checker_btn_path
+  who_starter_btn_path
+  find_temp_btn_path
+  find_page_btn_path
+  rooftop_data_getter_btn_path
+  meta_scraper_btn_path
+  cs_starter_btn_path
+
+
+3. Formatter Starters: /admin/_starters_formatter.html.erb
+  crm_staff_counter_btn_path => services/staffer_service.rb
+  format_phone_finalizer_btn_path => services/indexer_service.rb => format_phone_finalizer_caller
+  > FormatPhone
+  > FormatterCaller
+  phone_mig_btn_path => services/indexer_service.rb => phone_mig
+  > GeoPhoneMig
+  format_adr_btn_path => services/indexer_service.rb => format_adr
+  > CleanGeoMig
+  geo_to_indexer_btn_path => services/indexer_service.rb => geo_to_indexer
+  > MetaGeoMig
+
+
+4. Finalizer Starters: /admin/_starters_finalizer.html.erb
+  finalizer_btn_path => /controllers/indexers_controller.rb => finalizer_btn => /services/indexer_service.rb =>
+  > UrlSorter > REPLACED: url_arr_mover
+  * pin_arr_mover
+  * act_arr_mover
+  * act_squeezer_caller
+  * ph_arr_mover_express
+
+
+  id_sorter_btn_path => /controllers/indexers_controller.rb =>
+  * url_arr_mover ** SAME AS ABOVE! DUPLICATE!
+  * pin_arr_mover ** SAME AS ABOVE! DUPLICATE!
+  * act_arr_mover ** SAME AS ABOVE! DUPLICATE!
+  * ph_arr_mover_express ** SAME AS ABOVE! DUPLICATE!
+
+  score_calculator_btn_path => services/indexer_service.rb => score_calculator
+
+  scraper_mig_btn_path => services/indexer_service.rb => scraper_mig
+
+
+
+5. Dashboard Starters: admin/_starters_dashboard.html.erb
+  dashboard_mega_btn_path => services/dashboard_service.rb => mega_dash
+  cores_dash_btn_path => ALL THESE ARE IN SAME PLACE, AND USE SAME METHODS.
+  staffers_dash_btn_path => ALL THESE ARE IN SAME PLACE, AND USE SAME METHODS.
+  franchise_dash_btn_path => ALL THESE ARE IN SAME PLACE, AND USE SAME METHODS.
+  geo_locations_dash_btn_path => ALL THESE ARE IN SAME PLACE, AND USE SAME METHODS.
+  indexer_dash_btn_path => ALL THESE ARE IN SAME PLACE, AND USE SAME METHODS.
+  whos_dash_btn_path => ALL THESE ARE IN SAME PLACE, AND USE SAME METHODS.
+
+
+6. Location Starter: /admin/_starters_location.html.erb
+  geo_places_starter_btn_path
+  turbo_matcher_btn_path
+
+
+7. CSV Starters: /admin/_starters_csvs.html.erb

@@ -1,0 +1,76 @@
+example: https://www.nissanofnewnan.com
+
+schema: staffers
+street
+city
+state
+zip
+full_adr
+domain
+
+
+schema: indexers
+clean_url
+full_addr
+street
+city
+state
+zip
+phone
+
+##########
+
+STAFFERS:
+service: /app/services/staffer_service.rb
+model: /app/models/staffer.rb
+search: /app/views/staffers/search.html.erb
+controller: /app/controllers/staffers_controller.rb
+helper: /app/helpers/staffers_helper.rb
+
+#################
+def set_staffer_service
+    @staffer_service = StafferService.new
+end
+
+
+<td><%= render partial: 'layouts/text_field_tag', locals: { col: :domain } %></td>
+
+
+**********
+scraped_conts_sts_checker on indexer_service (line 576)
+
+
+***********
+New Feature: migrate_adr_to_staffers
+on indexer_service
+# Will be button in admin to migrate rt adrs into each cont in staffers.
+
+migrate_adr_to_staffers
+migrate_adr_to_staffers_btn
+migrate_adr_to_staffers_btn_path
+
+
+FOR MY GEM!!!!!!
+Where to put Modules:
+/Users/Adam/Desktop/MaxDigital/bds_max/app/models/concerns/csv_tool.rb
+
+/Users/Adam/Desktop/MaxDigital/bds_max/app/models/concerns/filterable.rb
+
+/Users/Adam/Desktop/MaxDigital/bds_max/app/models/staffer.rb
+
+/Users/Adam/Desktop/MaxDigital/bds_max/app/views/layouts/_select_tag.html.erb
+
+/Users/Adam/Desktop/MaxDigital/bds_max/app/helpers/application_helper.rb
+
+/Users/Adam/Desktop/MaxDigital/bds_max/app/controllers/staffers_controller.rb
+
+
+*** ####### Bring Service Section into Staffers Controller:
+
+def set_staffer_service
+  @staffer_service = StafferService.new
+end
+
+*** ####### Use Scopes for options lists - dropdown, etc.
+
+*** ### SINATRA - are Application helpers, controllers available?

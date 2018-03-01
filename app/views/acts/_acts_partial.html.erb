@@ -1,0 +1,54 @@
+<p id="notice"><%= notice %></p>
+
+<div class="row">
+  <div class="col-md-12">
+    <h1 class="text-center">Rooftops</h1>
+  </div>
+</div>
+
+
+<div class="row">
+  <%= render 'acts/acts_search_partial', search: @search %>
+</div>
+
+
+<div class="row">
+  <div class="col-md-12">
+    <h5>Search Results: <%= @acts.count %></h5>
+  </div>
+</div>
+
+
+<table id="acts" class="display table table-bordered table-hover table-striped text-nowrap">
+  <thead>
+    <tr>
+      <th><%= sort_link(@search, :act_name, "RT Name") %></th>
+      <th><%= sort_link(@search, :street) %></th>
+      <th><%= sort_link(@search, :city) %></th>
+      <th><%= sort_link(@search, :state) %></th>
+      <th><%= sort_link(@search, :zip) %></th>
+      <th><%= sort_link(@search, :phone) %></th>
+      <th><%= sort_link(@search, :url) %></th>
+      <th><%= sort_link(@search, :gp_date, "RT Scrape Date") %></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @acts.each do |act| %>
+      <tr>
+        <td><%= link_to act.act_name, act %></td>
+        <td><%= act.street %></td>
+        <td><%= act.city %></td>
+        <td><%= act.state %></td>
+        <td><%= act.zip %></td>
+        <td><%= act.phone %></td>
+        <td><%= act.url %></td>
+        <td><%= act.gp_date&.strftime('%x') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+<%= will_paginate @acts %>
+<br>

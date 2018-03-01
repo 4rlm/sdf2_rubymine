@@ -1,0 +1,39 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <%= search_form_for(@search) do |f| %>
+      <div class="field">
+        <%= f.label :act_name_cont_any, "Name: " %>
+        <%= f.search_field :act_name_cont_any %>
+      </div>
+
+      <div class="class="field"">
+        <%= f.label :city_matches_any, "City: " %>
+        <%= f.search_field :city_matches_any %>
+      </div>
+
+      <div class="class="field"">
+        <%= f.label :state_cont_any, "State: " %>
+        <%= f.search_field :state_cont_any %>
+      </div>
+
+      <div class="class="field"">
+        <%= f.label :zip_cont_any, "Zip: " %>
+        <%= f.search_field :zip_cont_any %>
+      </div>
+
+      <div class="class="field"">
+        <%= f.label :phone_cont_any, "Phone: " %>
+        <%= f.search_field :phone_cont_any %>
+      </div>
+
+      <div class="class="field"">
+        <%= f.label :url_cont_any, "Url: " %>
+        <%= f.search_field :url_cont_any %>
+      </div>
+
+      <div class="actions"><%= f.submit "Search" %></div>
+    <% end %>
+
+  </div>
+</div>

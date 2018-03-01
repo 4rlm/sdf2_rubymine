@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  category: MyString
+  sub_category: MyString
+  criteria_term: MyString
+  response_term: MyString
+  mth_name: MyString
+  criteria_count: MyString
+  response_count: MyString
+
+two:
+  category: MyString
+  sub_category: MyString
+  criteria_term: MyString
+  response_term: MyString
+  mth_name: MyString
+  criteria_count: MyString
+  response_count: MyString
